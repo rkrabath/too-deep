@@ -63,45 +63,74 @@ class Map(object):
                 print " " + str(neighbor)
 
         
+class Display(object):
+
+    def __init__(self, map, scale):
+        # set up the colors
+        self.BLACK = (  0,   0,   0)
+        self.WHITE = (255, 255, 255)
+        self.RED   = (255,   0,   0)
+        self.GREEN = (  0, 255,   0)
+        self.BLUE  = (  0,   0, 255)
+        pygame.init()
+        self.map = map
+        self.scale = scale
+        self.layer = self.map.max
+    
+        dimension = self.scale * self.map.max + 2
+        self.DISPLAYSURF = pygame.display.set_mode((dimension, dimension), 0, 32)
+
+        # set up the window
+        pygame.display.set_caption('Drawing')
+
+    def update(self):
+        # draw on the surface object
+        self.DISPLAYSURF.fill(self.WHITE)
+
+        for node in nx.nodes(self.map.graph):
+            if node.z != self.layer:
+                continue
+            pygame.draw.circle(self.DISPLAYSURF, self.BLUE, node.xy_display(self.scale), 5, 0)
+
+        for edge in nx.edges(self.map.graph):
+            pygame.draw.line(self.DISPLAYSURF, self.GREEN, edge[0].xy_display(self.scale), edge[1].xy_display(self.scale), 2) 
+
+        pygame.display.update()
+
+
+class Input(object):
+    def __init__(self):
+        pass
+
+    def process(self):
+        pygame.event.pump()
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                print event.key, event.unicode
         
+
+    
 
 min = 0
 max = 10
 scale = 100
 
 map = Map(max)
-map.print_grid()
+display = Display(map, scale)
+input = Input()
             
+map.print_grid()
 print "================================="
-pygame.init()
 
-# set up the window
-DISPLAYSURF = pygame.display.set_mode((scale*max+2, scale*max+2), 0, 32)
-pygame.display.set_caption('Drawing')
   
-# set up the colors
-BLACK = (  0,   0,   0)
-WHITE = (255, 255, 255)
-RED   = (255,   0,   0)
-GREEN = (  0, 255,   0)
-BLUE  = (  0,   0, 255)
   
-# draw on the surface object
-DISPLAYSURF.fill(WHITE)
-
-for node in nx.nodes(map.graph):
-    pygame.draw.circle(DISPLAYSURF, BLUE, node.xy_display(scale), 5, 0)
-
-for edge in nx.edges(map.graph):
-    pygame.draw.line(DISPLAYSURF, GREEN, edge[0].xy_display(scale), edge[1].xy_display(scale), 2) 
 
 # run the game loop
 while True:
-    pygame.event.pump()
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == KEYDOWN:
-            print event.key, event.unicode
-    pygame.display.update()
+    input.process()
+    display.update()
+
+
