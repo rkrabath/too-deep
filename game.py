@@ -100,16 +100,86 @@ class Display(object):
 
 class Input(object):
     def __init__(self):
-        pass
+        self.shift_down = False
+        self.ctrl_down = False
+        self.alt_down = False
+
+        self.down_options = {
+                    K_LSHIFT : self.shift_pressed,
+                    K_RSHIFT : self.shift_pressed,
+                    K_LCTRL : self.ctrl_pressed,
+                    K_RCTRL : self.ctrl_pressed,
+                    K_LALT : self.alt_pressed,
+                    K_RALT : self.alt_pressed,
+                }
+
+        self.up_options = {
+                    K_RSHIFT : self.shift_released,
+                    K_LSHIFT : self.shift_released,
+                    K_RCTRL : self.ctrl_released,
+                    K_LCTRL : self.ctrl_released,
+                    K_RALT : self.alt_released,
+                    K_LALT : self.alt_released,
+                }
+
+        self.ignored_input_types = [ ACTIVEEVENT, MOUSEMOTION, ]
+
+    def exit(self):
+        pygame.quit()
+        sys.exit()
+        
+
+    def shift_pressed(self):
+        if self.shift_down:
+            print "Shift pressed but shift already pressed"
+        self.shift_down = True
+
+    def shift_released(self):
+        if not self.shift_down:
+            print "Shift released but already not down"
+        self.shift_down = False
+
+    def ctrl_pressed(self):
+        if self.ctrl_down:
+            print "ctrl pressed but shift already pressed"
+        self.ctrl_down = True
+
+    def ctrl_released(self):
+        if not self.ctrl_down:
+            print "ctrl released but already not down"
+        self.ctrl_down = False
+    
+    def alt_pressed(self):
+        if self.alt_down:
+            print "alt pressed but shift already pressed"
+        self.alt_down = True
+
+    def alt_released(self):
+        if not self.alt_down:
+            print "alt released but already not down"
+        self.alt_down = False
+
+
 
     def process(self):
         pygame.event.pump()
         for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
-                print event.key, event.unicode
+            if event.type in self.ignored_input_types:
+                continue
+            elif event.type == QUIT:
+                self.exit()
+            elif event.type == KEYDOWN:
+                try:
+                    self.down_options[event.key]()
+                except KeyError:
+                    print "Key pressed with no action defined: ", event.key, event.unicode
+            elif event.type == KEYUP:
+                try:
+                    self.up_options[event.key]()
+                except KeyError:
+                    print "Key pressed with no action defined: ", event.key
+            else:
+                print "Unrecongized entry: ", event.type
         
 
     
@@ -123,6 +193,9 @@ display = Display(map, scale)
 input = Input()
             
 map.print_grid()
+print K_LSHIFT, K_RSHIFT
+print K_LCTRL, K_RCTRL
+print K_LALT, K_RALT
 print "================================="
 
   
