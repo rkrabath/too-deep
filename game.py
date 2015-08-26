@@ -31,25 +31,25 @@ class Point(object):
 
 
 class Map(object):
-    def __init__(self,dimension):
+    def __init__(self,max):
         self.graph = nx.Graph()
         self.min = 0
-        self.max = dimension+1
+        self.max = max
 
         # Create nodes for topmost layer:
-        for x in range(self.min,self.max):
-            for y in range(self.min,self.max):
+        for x in range(self.min,self.max+1):
+            for y in range(self.min,self.max+1):
                 # add node:
-                p = Point(dimension,x,y)
+                p = Point(max,x,y)
                 self.graph.add_node(p)
 
-        for x in range(self.min,self.max):
-            for y in range(self.min,self.max):
-                p = Point(self.max,x,y)
-                # connect node:
+        # Create connections for topmost layer:
+        for x in range(self.min,self.max+1):
+            for y in range(self.min,self.max+1):
+                p = Point(max,x,y)
                 # compute neighbors:
-                south_point = Point(dimension,x,y-1)
-                west_point = Point(dimension,x-1,y)
+                south_point = Point(max,x,y-1)
+                west_point = Point(max,x-1,y)
                 
                 if x != min:
                     self.graph.add_edge(p,west_point)
@@ -83,6 +83,16 @@ class Display(object):
         # set up the window
         pygame.display.set_caption('Drawing')
 
+    def level_down(self):
+        if not self.layer - 1 < self.map.min:
+            self.layer -= 1
+        print "Displaying layer " + str(self.layer)
+        
+    def level_up(self):
+        if not self.layer + 1 > self.map.max:
+            self.layer += 1
+        print "Displaying layer " + str(self.layer)
+
     def update(self):
         # draw on the surface object
         self.DISPLAYSURF.fill(self.WHITE)
@@ -93,71 +103,65 @@ class Display(object):
             pygame.draw.circle(self.DISPLAYSURF, self.BLUE, node.xy_display(self.scale), 5, 0)
 
         for edge in nx.edges(self.map.graph):
+            if node.z != self.layer:
+                continue
             pygame.draw.line(self.DISPLAYSURF, self.GREEN, edge[0].xy_display(self.scale), edge[1].xy_display(self.scale), 2) 
 
         pygame.display.update()
 
 
 class Input(object):
-    def __init__(self):
+    def __init__(self, display):
+        self.display = display
         self.shift_down = False
         self.ctrl_down = False
         self.alt_down = False
 
         self.down_options = {
-                    K_LSHIFT : self.shift_pressed,
-                    K_RSHIFT : self.shift_pressed,
-                    K_LCTRL : self.ctrl_pressed,
-                    K_RCTRL : self.ctrl_pressed,
-                    K_LALT : self.alt_pressed,
-                    K_RALT : self.alt_pressed,
+                    '>' : self.display.level_down,
+                    '<' : self.display.level_up,
+                    
                 }
 
         self.up_options = {
-                    K_RSHIFT : self.shift_released,
-                    K_LSHIFT : self.shift_released,
-                    K_RCTRL : self.ctrl_released,
-                    K_LCTRL : self.ctrl_released,
-                    K_RALT : self.alt_released,
-                    K_LALT : self.alt_released,
                 }
 
-        self.ignored_input_types = [ ACTIVEEVENT, MOUSEMOTION, ]
+        self.ignored_input_types = [ ACTIVEEVENT, MOUSEMOTION, KEYUP]
 
     def exit(self):
         pygame.quit()
         sys.exit()
         
 
-    def shift_pressed(self):
-        if self.shift_down:
-            print "Shift pressed but shift already pressed"
-        self.shift_down = True
-
-    def shift_released(self):
-        if not self.shift_down:
-            print "Shift released but already not down"
-        self.shift_down = False
-
-    def ctrl_pressed(self):
-        if self.ctrl_down:
-            print "ctrl pressed but shift already pressed"
-        self.ctrl_down = True
-
-    def ctrl_released(self):
-        if not self.ctrl_down:
-            print "ctrl released but already not down"
-        self.ctrl_down = False
-    
-    def alt_pressed(self):
-        if self.alt_down:
-            print "alt pressed but shift already pressed"
-        self.alt_down = True
-
-    def alt_released(self):
-        if not self.alt_down:
-            print "alt released but already not down"
-        self.alt_down = False
+#    def shift_pressed(self):
+#        if self.shift_down:
+#            print "Shift pressed but shift already pressed"
+#        self.shift_down = True
+#
+#    def shift_released(self):
+#        if not self.shift_down:
+#            print "Shift released but already not down"
+#        self.shift_down = False
+#
+#    def ctrl_pressed(self):
+#        if self.ctrl_down:
+#            print "ctrl pressed but shift already pressed"
+#        self.ctrl_down = True
+#
+#    def ctrl_released(self):
+#        if not self.ctrl_down:
+#            print "ctrl released but already not down"
+#        self.ctrl_down = False
+#    
+#    def alt_pressed(self):
+#        if self.alt_down:
+#            print "alt pressed but shift already pressed"
+#        self.alt_down = True
+#
+#    def alt_released(self):
+#        if not self.alt_down:
+#            print "alt released but already not down"
+#        self.alt_down = False
 
 
 
@@ -170,14 +174,9 @@ class Input(object):
                 self.exit()
             elif event.type == KEYDOWN:
                 try:
-                    self.down_options[event.key]()
+                    self.down_options[event.unicode]()
                 except KeyError:
-                    print "Key pressed with no action defined: ", event.key, event.unicode
-            elif event.type == KEYUP:
-                try:
-                    self.up_options[event.key]()
-                except KeyError:
-                    print "Key pressed with no action defined: ", event.key
+                    print "Key pressed with no action defined: ", event.key, "|"+event.unicode+"|", event.mod
             else:
                 print "Unrecongized entry: ", event.type
         
@@ -190,12 +189,11 @@ scale = 100
 
 map = Map(max)
 display = Display(map, scale)
-input = Input()
+input = Input(display)
             
 map.print_grid()
-print K_LSHIFT, K_RSHIFT
-print K_LCTRL, K_RCTRL
-print K_LALT, K_RALT
+print K_LESS
+print K_GREATER
 print "================================="
 
   
