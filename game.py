@@ -72,13 +72,16 @@ class Display(object):
         self.RED   = (255,   0,   0)
         self.GREEN = (  0, 255,   0)
         self.BLUE  = (  0,   0, 255)
+        self.HIGHLIGHT   = pygame.Color(255,   128,   128, 128)
+        print len(self.HIGHLIGHT)
         pygame.init()
         self.map = map
         self.scale = scale
         self.layer = self.map.max
     
         dimension = self.scale * self.map.max + 2
-        self.DISPLAYSURF = pygame.display.set_mode((dimension, dimension), 0, 32)
+        self.DISPLAYSURF = pygame.display.set_mode((dimension, dimension), pygame.SRCALPHA, 32)
+        print pygame.display.get_driver()
 
         # set up the window
         pygame.display.set_caption('Drawing')
@@ -92,6 +95,12 @@ class Display(object):
         if not self.layer + 1 > self.map.max:
             self.layer += 1
         print "Displaying layer " + str(self.layer)
+
+    def highlight_coordinate(self, point):
+        s = pygame.Surface((100,100))
+        s.set_alpha(128)
+        s.fill(self.RED)
+        self.DISPLAYSURF.blit(s, (150,150))
 
     def update(self):
         # draw on the surface object
@@ -107,6 +116,8 @@ class Display(object):
                 continue
             pygame.draw.line(self.DISPLAYSURF, self.GREEN, edge[0].xy_display(self.scale), edge[1].xy_display(self.scale), 2) 
 
+        self.highlight_coordinate(1)
+    
         pygame.display.update()
 
 
@@ -191,7 +202,7 @@ map = Map(max)
 display = Display(map, scale)
 input = Input(display)
             
-map.print_grid()
+#map.print_grid()
 print K_LESS
 print K_GREATER
 print "================================="
