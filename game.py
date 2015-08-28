@@ -72,35 +72,49 @@ class Display(object):
         self.RED   = (255,   0,   0)
         self.GREEN = (  0, 255,   0)
         self.BLUE  = (  0,   0, 255)
-        self.HIGHLIGHT   = pygame.Color(255,   128,   128, 128)
-        print len(self.HIGHLIGHT)
         pygame.init()
         self.map = map
         self.scale = scale
         self.layer = self.map.max
+        self.highlighted_coordinate = None
     
         dimension = self.scale * self.map.max + 2
         self.DISPLAYSURF = pygame.display.set_mode((dimension, dimension), pygame.SRCALPHA, 32)
-        print pygame.display.get_driver()
 
         # set up the window
         pygame.display.set_caption('Drawing')
+
 
     def level_down(self):
         if not self.layer - 1 < self.map.min:
             self.layer -= 1
         print "Displaying layer " + str(self.layer)
+
         
     def level_up(self):
         if not self.layer + 1 > self.map.max:
             self.layer += 1
         print "Displaying layer " + str(self.layer)
 
-    def highlight_coordinate(self, point):
-        s = pygame.Surface((100,100))
-        s.set_alpha(128)
-        s.fill(self.RED)
-        self.DISPLAYSURF.blit(s, (150,150))
+
+    def get_coord(self, point):
+        """ Translate display points to map points """
+        offset = scale/2
+        # offset, round considerably (integer division), then unoffset
+        return [(sub+offset)/scale*scale-offset for sub in point]
+        
+
+    def highlight_node(self, point):
+        self.highlighted_coordinate = point
+
+
+    def show_highlight(self):
+        if self.highlighted_coordinate:
+            s = pygame.Surface((100,100))
+            s.set_alpha(128)
+            s.fill(self.RED)
+            self.DISPLAYSURF.blit(s, self.highlighted_coordinate)
+
 
     def update(self):
         # draw on the surface object
@@ -116,7 +130,7 @@ class Display(object):
                 continue
             pygame.draw.line(self.DISPLAYSURF, self.GREEN, edge[0].xy_display(self.scale), edge[1].xy_display(self.scale), 2) 
 
-        self.highlight_coordinate(1)
+        self.show_highlight()
     
         pygame.display.update()
 
@@ -137,7 +151,7 @@ class Input(object):
         self.up_options = {
                 }
 
-        self.ignored_input_types = [ ACTIVEEVENT, MOUSEMOTION, KEYUP]
+        self.ignored_input_types = [ ACTIVEEVENT, MOUSEBUTTONUP, KEYUP]
 
     def exit(self):
         pygame.quit()
@@ -188,6 +202,9 @@ class Input(object):
                     self.down_options[event.unicode]()
                 except KeyError:
                     print "Key pressed with no action defined: ", event.key, "|"+event.unicode+"|", event.mod
+            elif event.type == MOUSEMOTION:
+                node = self.display.get_coord(event.pos)
+                self.display.highlight_node(node)
             else:
                 print "Unrecongized entry: ", event.type
         
