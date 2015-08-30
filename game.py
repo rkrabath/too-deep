@@ -99,9 +99,9 @@ class Display(object):
 
     def get_coord(self, point):
         """ Translate display points to map points """
-        offset = scale/2
-        # offset, round considerably (integer division), then unoffset
-        return [(sub+offset)/scale*scale-offset for sub in point]
+        offset = self.scale/2
+        # offset, round considerably (integer division)
+        return [(sub+offset)/scale for sub in point]
         
 
     def highlight_node(self, point):
@@ -110,10 +110,11 @@ class Display(object):
 
     def show_highlight(self):
         if self.highlighted_coordinate:
+            display_point = [(x*scale-self.scale/2) for x in self.highlighted_coordinate]
             s = pygame.Surface((100,100))
             s.set_alpha(128)
             s.fill(self.RED)
-            self.DISPLAYSURF.blit(s, self.highlighted_coordinate)
+            self.DISPLAYSURF.blit(s, display_point)
 
 
     def update(self):
@@ -145,7 +146,6 @@ class Input(object):
         self.down_options = {
                     '>' : self.display.level_down,
                     '<' : self.display.level_up,
-                    
                 }
 
         self.up_options = {
@@ -157,38 +157,6 @@ class Input(object):
         pygame.quit()
         sys.exit()
         
-
-#    def shift_pressed(self):
-#        if self.shift_down:
-#            print "Shift pressed but shift already pressed"
-#        self.shift_down = True
-#
-#    def shift_released(self):
-#        if not self.shift_down:
-#            print "Shift released but already not down"
-#        self.shift_down = False
-#
-#    def ctrl_pressed(self):
-#        if self.ctrl_down:
-#            print "ctrl pressed but shift already pressed"
-#        self.ctrl_down = True
-#
-#    def ctrl_released(self):
-#        if not self.ctrl_down:
-#            print "ctrl released but already not down"
-#        self.ctrl_down = False
-#    
-#    def alt_pressed(self):
-#        if self.alt_down:
-#            print "alt pressed but shift already pressed"
-#        self.alt_down = True
-#
-#    def alt_released(self):
-#        if not self.alt_down:
-#            print "alt released but already not down"
-#        self.alt_down = False
-
-
 
     def process(self):
         pygame.event.pump()
@@ -205,10 +173,11 @@ class Input(object):
             elif event.type == MOUSEMOTION:
                 node = self.display.get_coord(event.pos)
                 self.display.highlight_node(node)
+            elif event.type == MOUSEBUTTONDOWN:
+                node = self.display.get_coord(event.pos)
+                print "Clicked on " + ", ".join([str(x) for x in node])
             else:
                 print "Unrecongized entry: ", event.type
-        
-
     
 
 min = 0
@@ -224,8 +193,7 @@ print K_LESS
 print K_GREATER
 print "================================="
 
-  
-  
+
 
 # run the game loop
 while True:
