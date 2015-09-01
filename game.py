@@ -27,7 +27,7 @@ class Point(object):
         return (self.x, self.y)
 
     def xy_display(self, scale):
-        return (self.x * scale, self.y * scale)
+        return (self.x * scale, self.y * scale )
 
 
 class Map(object):
@@ -46,23 +46,57 @@ class Map(object):
         # Create connections for topmost layer:
         for x in range(self.min,self.max+1):
             for y in range(self.min,self.max+1):
-                p = Point(max,x,y)
-                # compute neighbors:
-                south_point = Point(max,x,y-1)
-                west_point = Point(max,x-1,y)
+                self.make_traversable(Point(max,x,y))
                 
-                if x != min:
-                    self.graph.add_edge(p,west_point)
-                if y != min:
-                    self.graph.add_edge(p,south_point)
-                
+
     def print_grid(self):
         for node in nx.nodes(self.graph):
             print node
             for neighbor in nx.all_neighbors(self.graph, node):
                 print " " + str(neighbor)
 
+
+    def get_incident_edges(self, node):
+        try:
+            return [x for x in nx.all_neighbors(self.graph, node)]
+        except nx.exception.NetworkXError:
+            return []
+            
+
+    def is_traversable(self, node):
+        if self.get_incident_edges(node):
+            return True
+        else:
+            return False
+
+
+    def make_traversable(self, node):
+        north_point = Point(node.z,node.x,node.y+1)
+        south_point = Point(node.z,node.x,node.y-1)
+        east_point = Point(node.z,node.x+1,node.y)
+        west_point = Point(node.z,node.x-1,node.y)
+
+        if node.x != min:
+            self.graph.add_edge(node,west_point)
+        if node.x != max:
+            self.graph.add_edge(node,east_point)
+        if node.y != min:
+            self.graph.add_edge(node,south_point)
+        if node.y != max:
+            self.graph.add_edge(node,north_point)
         
+
+    def make_not_traversable(self, node):
+        north_point = Point(node.z,node.x,node.y+1)
+        south_point = Point(node.z,node.x,node.y-1)
+        east_point = Point(node.z,node.x+1,node.y)
+        west_point = Point(node.z,node.x-1,node.y)
+
+        for neighbor in self.graph.neighbors(node):        
+            self.graph.remove_edge(neighbor, node)
+        
+
+
 class Display(object):
 
     def __init__(self, map, scale):
@@ -101,7 +135,9 @@ class Display(object):
         """ Translate display points to map points """
         offset = self.scale/2
         # offset, round considerably (integer division)
-        return [(sub+offset)/scale for sub in point]
+        
+        protopoint = [(sub+offset)/scale for sub in point]
+        return Point(self.layer, *protopoint)
         
 
     def highlight_node(self, point):
@@ -110,7 +146,7 @@ class Display(object):
 
     def show_highlight(self):
         if self.highlighted_coordinate:
-            display_point = [(x*scale-self.scale/2) for x in self.highlighted_coordinate]
+            display_point = [(x*scale-self.scale/2) for x in self.highlighted_coordinate.xy()]
             s = pygame.Surface((100,100))
             s.set_alpha(128)
             s.fill(self.RED)
@@ -175,7 +211,11 @@ class Input(object):
                 self.display.highlight_node(node)
             elif event.type == MOUSEBUTTONDOWN:
                 node = self.display.get_coord(event.pos)
-                print "Clicked on " + ", ".join([str(x) for x in node])
+                print "Clicked on " + ", ".join([str(x) for x in node.xy()])
+                if self.display.map.is_traversable(node):
+                    self.display.map.make_not_traversable(node)
+                else:
+                    self.display.map.make_traversable(node)
             else:
                 print "Unrecongized entry: ", event.type
     
