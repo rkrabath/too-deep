@@ -45,10 +45,14 @@ class Input(object):
             elif event.type == MOUSEBUTTONDOWN:
                 node = self.display.get_coord(event.pos)
                 print "Clicked on " + ", ".join([str(x) for x in node.xy()])
-                if self.display.map.is_traversable(node):
-                    self.display.map.make_not_traversable(node)
-                else:
-                    self.display.map.make_traversable(node)
+                print event.button
+                if event.button == 1:
+                    if self.display.map.is_traversable(node):
+                        self.display.map.make_not_traversable(node)
+                    else:
+                        self.display.map.make_traversable(node)
+                elif event.button == 3:
+                    self.display.map.place_agent(node)
             else:
                 print "Unrecongized entry: ", event.type
     

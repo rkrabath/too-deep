@@ -50,6 +50,16 @@ class Display(object):
         return Point(self.layer, *protopoint)
         
 
+    def draw_agents(self):
+        for agent in self.map.agents:
+            x, y = agent.location.xy()
+            pygame.draw.circle(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale-self.scale/4), self.scale/8, 4)
+            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale-self.scale/8),(x*self.scale, y*self.scale+self.scale/8), 4)
+            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale),(x*self.scale+self.scale/8, y*self.scale-self.scale/8), 4)
+            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale),(x*self.scale-self.scale/8, y*self.scale-self.scale/8), 4)
+            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale+self.scale/8),(x*self.scale+self.scale/8, y*self.scale+self.scale/4), 4)
+            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale+self.scale/8),(x*self.scale-self.scale/8, y*self.scale+self.scale/4), 4)
+
     def highlight_node(self, point):
         self.highlighted_coordinate = point
 
@@ -76,6 +86,8 @@ class Display(object):
             if node.z != self.layer:
                 continue
             pygame.draw.line(self.DISPLAYSURF, self.GREEN, edge[0].xy_display(self.scale), edge[1].xy_display(self.scale), 2) 
+
+        self.draw_agents()
 
         self.show_highlight()
     
