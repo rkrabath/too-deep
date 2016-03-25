@@ -25,7 +25,7 @@ class Map(object):
         # Create connections for topmost layer:
         for x in range(self.min,self.max+1):
             for y in range(self.min,self.max+1):
-                self.make_traversable(Point(max,x,y))
+                self.make_traversable(Point(max,x,y), setup=True)
                 
         # Set exit point:
         middle = max/2
@@ -53,26 +53,30 @@ class Map(object):
             return False
 
 
-    def make_traversable(self, node):
+    def make_traversable(self, node, setup=False):
         try:
             west_point = Point(node.z,node.x-1,node.y)
-            self.graph.add_edge(node,west_point)
+            if self.is_traversable(west_point) or setup:
+                self.graph.add_edge(node,west_point)
         except ValueError:
             pass
 
         try:
             south_point = Point(node.z,node.x,node.y-1)
-            self.graph.add_edge(node,south_point)
+            if self.is_traversable(south_point) or setup:
+                self.graph.add_edge(node,south_point)
         except ValueError:
             pass
 
         east_point = Point(node.z,node.x+1,node.y)
         if node.x != max:
-            self.graph.add_edge(node,east_point)
+            if self.is_traversable(east_point) or setup:
+                self.graph.add_edge(node,east_point)
 
         north_point = Point(node.z,node.x,node.y+1)
         if node.y != max:
-            self.graph.add_edge(node,north_point)
+            if self.is_traversable(north_point) or setup:
+                self.graph.add_edge(node,north_point)
         
 
     def make_not_traversable(self, node):
@@ -83,6 +87,7 @@ class Map(object):
 
         for neighbor in self.graph.neighbors(node):        
             self.graph.remove_edge(neighbor, node)
+
 
     def place_agent(self, location):
         self.agents.append(Agent(location))
