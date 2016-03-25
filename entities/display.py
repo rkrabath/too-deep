@@ -60,6 +60,11 @@ class Display(object):
             pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale+self.scale/8),(x*self.scale+self.scale/8, y*self.scale+self.scale/4), 4)
             pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale+self.scale/8),(x*self.scale-self.scale/8, y*self.scale+self.scale/4), 4)
 
+    
+    def draw_exit(self):
+        pygame.draw.rect(self.DISPLAYSURF, self.BLACK, pygame.Rect(self.map.exit.x * self.scale, self.map.exit.y * self.scale, self.scale, self.scale), 5)
+
+
     def highlight_node(self, point):
         self.highlighted_coordinate = point
 
@@ -88,6 +93,8 @@ class Display(object):
             pygame.draw.line(self.DISPLAYSURF, self.GREEN, edge[0].xy_display(self.scale), edge[1].xy_display(self.scale), 2) 
 
         self.draw_agents()
+
+        self.draw_exit()
 
         self.show_highlight()
     
