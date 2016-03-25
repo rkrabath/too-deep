@@ -27,6 +27,10 @@ class Map(object):
             for y in range(self.min,self.max+1):
                 self.make_traversable(Point(max,x,y))
                 
+        # Set exit point:
+        middle = max/2
+        self.exit = Point(max, middle, middle)
+
 
     def print_grid(self):
         for node in nx.nodes(self.graph):
