@@ -1,8 +1,9 @@
 #!/usr/bin/python
 
 import sys
-import networkx as nx
+import time
 import pygame
+import networkx as nx
 from pygame.locals import *
 
 import entities as e
@@ -13,8 +14,9 @@ max = 10
 scale = 100
 
 map = e.Map(max)
-display = e.Display(map, scale)
-input = e.Input(display)
+dispatch = e.Dispatch(map)
+display = e.Display(map, dispatch, scale)
+input = e.Input(display, dispatch)
             
 #map.print_grid()
 print "================================="
@@ -25,5 +27,6 @@ print "================================="
 while True:
     input.process()
     display.update()
+    time.sleep(1)
 
 

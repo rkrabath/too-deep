@@ -9,7 +9,7 @@ from point import Point
 
 class Display(object):
 
-    def __init__(self, map, scale):
+    def __init__(self, map, dispatch, scale):
         # set up the colors
         self.BLACK = (  0,   0,   0)
         self.WHITE = (255, 255, 255)
@@ -18,6 +18,7 @@ class Display(object):
         self.BLUE  = (  0,   0, 255)
         pygame.init()
         self.map = map
+        self.dispatch = dispatch
         self.scale = scale
         self.layer = self.map.max
         self.highlighted_coordinate = None
@@ -51,7 +52,7 @@ class Display(object):
         
 
     def draw_agents(self):
-        for agent in self.map.agents:
+        for agent in self.dispatch.agents:
             x, y = agent.location.xy()
             pygame.draw.circle(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale-self.scale/4), self.scale/8, 4)
             pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale-self.scale/8),(x*self.scale, y*self.scale+self.scale/8), 4)

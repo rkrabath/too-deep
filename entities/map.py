@@ -6,12 +6,10 @@ import pygame
 from pygame.locals import *
 
 from point import Point
-from agent import Agent
 
 class Map(object):
     def __init__(self,max):
         self.graph = nx.Graph()
-        self.agents = []
         self.min = 0
         self.max = max
 
@@ -88,8 +86,4 @@ class Map(object):
         for neighbor in self.graph.neighbors(node):        
             self.graph.remove_edge(neighbor, node)
 
-
-    def place_agent(self, location):
-        self.agents.append(Agent(location))
-        
 

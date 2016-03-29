@@ -6,8 +6,9 @@ import pygame
 from pygame.locals import *
 
 class Input(object):
-    def __init__(self, display):
+    def __init__(self, display, dispatch):
         self.display = display
+        self.dispatch = dispatch
         self.shift_down = False
         self.ctrl_down = False
         self.alt_down = False
@@ -52,7 +53,7 @@ class Input(object):
                     else:
                         self.display.map.make_traversable(node)
                 elif event.button == 3:
-                    self.display.map.place_agent(node)
+                    self.dispatch.create_agent_at(node)
             else:
                 print "Unrecongized entry: ", event.type
     
