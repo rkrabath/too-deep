@@ -22,6 +22,9 @@ class Point(object):
                 if self.y == other.y:
                     return True
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __hash__(self):
         return int("{0:03d}{1:03d}{2:03d}".format(self.z, self.x, self.y))
 
