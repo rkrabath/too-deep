@@ -24,10 +24,6 @@ class Map(object):
         for x in range(self.min,self.max+1):
             for y in range(self.min,self.max+1):
                 self.make_traversable(Point(max,x,y), setup=True)
-                
-        # Set exit point:
-        middle = max/2
-        self.exit = Point(max, middle, middle)
 
 
     def print_grid(self):

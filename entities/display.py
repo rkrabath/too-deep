@@ -63,7 +63,9 @@ class Display(object):
 
     
     def draw_exit(self):
-        pygame.draw.rect(self.DISPLAYSURF, self.BLACK, pygame.Rect(self.map.exit.x * self.scale, self.map.exit.y * self.scale, self.scale, self.scale), 5)
+        if self.dispatch.exit:
+            x,y = self.dispatch.exit.xy()
+            pygame.draw.rect(self.DISPLAYSURF, self.BLACK, pygame.Rect(x * self.scale, y * self.scale, self.scale, self.scale), 5)
 
 
     def highlight_node(self, point):
