@@ -15,11 +15,18 @@ class Dispatch(object):
         self.map = map
 
         middle = map.max/2
-        self.create_exit_at(Point(max, middle, middle))
+        self.create_exit_at(Point(map.max, middle, middle))
+
+    
+    def update(self):
+        self.agents = [agent for agent in self.agents if agent.alive]
+        for agent in self.agents:
+            agent.act()
+      
 
 
     def create_agent_at(self, location):
-        self.agents.append(Agent(location))
+        self.agents.append(Agent(self, location))
     
 
     def create_exit_at(self, location):
@@ -27,3 +34,7 @@ class Dispatch(object):
             raise ValueError('The exit was already placed.')
         self.exit = location
 
+
+    def find(self, thing):
+        if thing == 'exit':
+            return self.exit

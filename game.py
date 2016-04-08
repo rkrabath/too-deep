@@ -26,6 +26,7 @@ print "================================="
 # run the game loop
 while True:
     input.process()
+    dispatch.update()
     display.update()
     time.sleep(1)
 
