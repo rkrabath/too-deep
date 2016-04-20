@@ -45,7 +45,11 @@ class Agent(object):
 
 
     def pathfind_to(self, target_location):
-        return nx.astar_path(self.dispatch.map.graph, self.location, target_location)
+        try:
+            return nx.astar_path(self.dispatch.map.graph, self.location, target_location)[1:]
+        except nx.exception.NetworkXNoPath:
+            return None
+            
 
     
     def follow_route(self):
