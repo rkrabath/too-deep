@@ -74,11 +74,6 @@ class Map(object):
         
 
     def make_not_traversable(self, node):
-        north_point = Point(node.z,node.x,node.y+1)
-        south_point = Point(node.z,node.x,node.y-1)
-        east_point = Point(node.z,node.x+1,node.y)
-        west_point = Point(node.z,node.x-1,node.y)
-
         for neighbor in self.graph.neighbors(node):        
             self.graph.remove_edge(neighbor, node)
 
