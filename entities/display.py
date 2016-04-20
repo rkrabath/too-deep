@@ -59,7 +59,7 @@ class Display(object):
             pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale),(x*self.scale+self.scale/8, y*self.scale-self.scale/8), self.scale/25)
             pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale),(x*self.scale-self.scale/8, y*self.scale-self.scale/8), self.scale/25)
             pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale+self.scale/8),(x*self.scale+self.scale/8, y*self.scale+self.scale/4), self.scale/25)
-            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale+self.scale/8),(x*self.scale-self.scale/8, y*self.scale+self.scale/4), 4)
+            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale+self.scale/8),(x*self.scale-self.scale/8, y*self.scale+self.scale/4), self.scale/25)
 
     
     def draw_exit(self):
