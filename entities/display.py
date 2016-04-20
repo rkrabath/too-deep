@@ -54,18 +54,18 @@ class Display(object):
     def draw_agents(self):
         for agent in self.dispatch.agents:
             x, y = agent.location.xy()
-            pygame.draw.circle(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale-self.scale/4), self.scale/8, 4)
-            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale-self.scale/8),(x*self.scale, y*self.scale+self.scale/8), 4)
-            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale),(x*self.scale+self.scale/8, y*self.scale-self.scale/8), 4)
-            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale),(x*self.scale-self.scale/8, y*self.scale-self.scale/8), 4)
-            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale+self.scale/8),(x*self.scale+self.scale/8, y*self.scale+self.scale/4), 4)
+            pygame.draw.circle(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale-self.scale/4), self.scale/8, self.scale/25)
+            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale-self.scale/8),(x*self.scale, y*self.scale+self.scale/8), self.scale/25)
+            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale),(x*self.scale+self.scale/8, y*self.scale-self.scale/8), self.scale/25)
+            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale),(x*self.scale-self.scale/8, y*self.scale-self.scale/8), self.scale/25)
+            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale+self.scale/8),(x*self.scale+self.scale/8, y*self.scale+self.scale/4), self.scale/25)
             pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale+self.scale/8),(x*self.scale-self.scale/8, y*self.scale+self.scale/4), 4)
 
     
     def draw_exit(self):
         if self.dispatch.exit:
             x,y = self.dispatch.exit.xy()
-            pygame.draw.rect(self.DISPLAYSURF, self.BLACK, pygame.Rect(x * self.scale, y * self.scale, self.scale, self.scale), 5)
+            pygame.draw.rect(self.DISPLAYSURF, self.BLACK, pygame.Rect(x * self.scale, y * self.scale, self.scale, self.scale), self.scale/20)
 
 
     def highlight_node(self, point):
@@ -75,7 +75,7 @@ class Display(object):
     def show_highlight(self):
         if self.highlighted_coordinate:
             display_point = [(x*self.scale-self.scale/2) for x in self.highlighted_coordinate.xy()]
-            s = pygame.Surface((100,100))
+            s = pygame.Surface((self.scale,self.scale))
             s.set_alpha(128)
             s.fill(self.RED)
             self.DISPLAYSURF.blit(s, display_point)
@@ -88,12 +88,12 @@ class Display(object):
         for node in nx.nodes(self.map.graph):
             if node.z != self.layer:
                 continue
-            pygame.draw.circle(self.DISPLAYSURF, self.BLUE, node.xy_display(self.scale), 5, 0)
+            pygame.draw.circle(self.DISPLAYSURF, self.BLUE, node.xy_display(self.scale), self.scale/5, 0)
 
         for edge in nx.edges(self.map.graph):
             if node.z != self.layer:
                 continue
-            pygame.draw.line(self.DISPLAYSURF, self.GREEN, edge[0].xy_display(self.scale), edge[1].xy_display(self.scale), 2) 
+            pygame.draw.line(self.DISPLAYSURF, self.GREEN, edge[0].xy_display(self.scale), edge[1].xy_display(self.scale), self.scale/50) 
 
         self.draw_agents()
 
