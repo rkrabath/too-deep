@@ -52,8 +52,8 @@ class Display(object):
         
 
     def draw_agents(self):
-        for agent in self.dispatch.agents:
-            x, y = agent.location.xy()
+        for agent, pipe, location in self.dispatch.agents.values():
+            x, y = location.xy()
             pygame.draw.circle(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale-self.scale/4), self.scale/8, self.scale/25)
             pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale-self.scale/8),(x*self.scale, y*self.scale+self.scale/8), self.scale/25)
             pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale),(x*self.scale+self.scale/8, y*self.scale-self.scale/8), self.scale/25)

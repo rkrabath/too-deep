@@ -1,14 +1,18 @@
 #!/usr/bin/python
 
 import sys
-import networkx as nx
 import pygame
+import multiprocessing
+import networkx as nx
 from pygame.locals import *
 
+from point import Point
+
 class Agent(object):
-    def __init__(self, dispatch, initial_location):
-        self.dispatch = dispatch
+    def __init__(self, dispatch_pipe, initial_location):
+        self.dispatch_pipe = dispatch_pipe
         self.location = initial_location 
+        self.map = None
         self.route = None
         self.alive = True
 
@@ -17,6 +21,30 @@ class Agent(object):
             'food',
             'drink',
         ]
+
+        self.process = multiprocessing.Process(target=self.main_loop)
+        self.process.start()
+
+
+    def cleanup(self):      # Must call this when agent finishes.
+        self.process.join()     
+
+    
+    def main_loop(self):
+        while True:
+            message = self.dispatch_pipe.recv()
+
+            if message['command'] == "tick":
+                self.act()
+
+            if message['command'] == "die":
+                return
+
+            if message['command'] == 'update_map':
+                self.map = message['payload']
+
+            
+
 
     def greatest_desire(self):
         return 'exit'
@@ -35,28 +63,27 @@ class Agent(object):
 
         # === LOAD TESTING ===
         goal = self.greatest_desire()
-        target_location = self.dispatch.find(goal)
-        self.route = self.pathfind_to(target_location)
+        # TODO: ask dispatch for destination point
+        #target_location = self.dispatch.find(goal)
+        self.route = self.pathfind_to(Point(100,50,50))
 
-        print self.location, self.route
         self.follow_route()
 
         self.check_still_alive()
 
 
     def check_still_alive(self ):
-        if self.dispatch.find('exit') == self.location:
-            self.alive = False
+        if Point(100,50,50) == self.location:
+            self.dispatch_pipe.send({'command': 'kill_me'})
 
 
     def pathfind_to(self, target_location):
         try:
-            return nx.astar_path(self.dispatch.map.graph, self.location, target_location)[1:]
+            return nx.astar_path(self.map, self.location, target_location)[1:]
         except nx.exception.NetworkXNoPath:
             return None
             
 
-    
     def follow_route(self):
         if self.route:
             next_location = self.route.pop(0)
@@ -68,3 +95,4 @@ class Agent(object):
     def _move_to(self, destination):
         # TODO: add some verification here to ensure we don't move through walls
         self.location = destination
+        self.dispatch_pipe.send({'command': 'new_position', 'payload': destination})
