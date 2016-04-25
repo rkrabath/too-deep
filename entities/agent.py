@@ -23,17 +23,22 @@ class Agent(object):
 
         
     def act(self):
-        if not self.route:
-            print('no route found')
-            goal = self.greatest_desire()
-            target_location = self.dispatch.find(goal)
-            print self.location, target_location
-            print type(self.location), type(target_location)
-            if target_location != self.location:
-                print("computing new route")
-                self.route = self.pathfind_to(target_location)
+        #if not self.route:
+        #    print('no route found')
+        #    goal = self.greatest_desire()
+        #    target_location = self.dispatch.find(goal)
+        #    print self.location, target_location
+        #    print type(self.location), type(target_location)
+        #    if target_location != self.location:
+        #        print("computing new route")
+        #        self.route = self.pathfind_to(target_location)
 
-        print self, self.route
+        # === LOAD TESTING ===
+        goal = self.greatest_desire()
+        target_location = self.dispatch.find(goal)
+        self.route = self.pathfind_to(target_location)
+
+        print self.location, self.route
         self.follow_route()
 
         self.check_still_alive()
