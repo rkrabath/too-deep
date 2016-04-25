@@ -10,8 +10,8 @@ import entities as e
 
 
 min = 0
-max = 10
-scale = 100
+max = 100
+scale = 10
 
 map = e.Map(max)
 dispatch = e.Dispatch(map)
@@ -24,10 +24,14 @@ print "================================="
 
 
 # run the game loop
+last_time = 0.0
 while True:
+    current_time = time.time()
     input.process()
-    dispatch.update()
     display.update()
-    time.sleep(1)
+    time.sleep(0.2)
+    if current_time > last_time + 1:
+        dispatch.update()
+        last_time = current_time
 
 
