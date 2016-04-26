@@ -9,12 +9,48 @@ from pygame.locals import *
 from point import Point
 
 class Agent(object):
-    def __init__(self, dispatch_pipe, initial_location):
-        self.dispatch_pipe = dispatch_pipe
+    def __init__(self, initial_location, dispatch):
         self.location = initial_location 
+        self.dispatch = dispatch
+
+        self.parent_end, child_end = multiprocessing.Pipe()
+
+        self.process = multiprocessing.Process(target=self.main_loop, args=(child_end, ))
+        self.process.start()
+
+        self.parent_end.send({'command': 'update_map', 'payload': self.dispatch.map.graph})
+
+        self.alive = True
+
+
+    def cleanup(self):      # Must call this when agent finishes.
+        self.process.join()     
+
+    
+    def tick(self):
+        # TODO: Need to send a map update periodically, but how to know when to do it?
+        self.parent_end.send({'command': 'tick'})        
+        while self.parent_end.poll():
+            message = self.parent_end.recv()
+            if message['command'] == 'new_position':
+                self.location = message['payload']
+            if message['command'] == 'kill_me':
+                self.parent_end.send({'command': 'die'})
+                self.cleanup()
+                self.alive = False
+
+
+############ Below here is the child process ############################
+
+    def main_loop(self, parent):
+
+        self.dispatch = None # It's in a different process now...
+
+        self.parent = parent
+
+        # Initialize some variables in the child
         self.map = None
         self.route = None
-        self.alive = True
 
         self.goals = [
             'exit',
@@ -22,17 +58,9 @@ class Agent(object):
             'drink',
         ]
 
-        self.process = multiprocessing.Process(target=self.main_loop)
-        self.process.start()
-
-
-    def cleanup(self):      # Must call this when agent finishes.
-        self.process.join()     
-
-    
-    def main_loop(self):
+        # Main loop.  When this exits the process will end.
         while True:
-            message = self.dispatch_pipe.recv()
+            message = self.parent.recv()
 
             if message['command'] == "tick":
                 self.act()
@@ -43,7 +71,6 @@ class Agent(object):
             if message['command'] == 'update_map':
                 self.map = message['payload']
 
-            
 
 
     def greatest_desire(self):
@@ -69,12 +96,15 @@ class Agent(object):
 
         self.follow_route()
 
-        self.check_still_alive()
+        if not self.still_alive():
+            self.parent.send({'command': 'kill_me'})
 
 
-    def check_still_alive(self ):
+    def still_alive(self ):
         if Point(100,50,50) == self.location:
-            self.dispatch_pipe.send({'command': 'kill_me'})
+            return False
+        else:
+            return True
 
 
     def pathfind_to(self, target_location):
@@ -95,4 +125,4 @@ class Agent(object):
     def _move_to(self, destination):
         # TODO: add some verification here to ensure we don't move through walls
         self.location = destination
-        self.dispatch_pipe.send({'command': 'new_position', 'payload': destination})
+        self.parent.send({'command': 'new_position', 'payload': destination})

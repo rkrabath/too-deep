@@ -11,7 +11,7 @@ from point import Point
 
 class Dispatch(object):
     def __init__(self, map):
-        self.agents = {}
+        self.agents = []
         self.exit = None
         self.map = map
         
@@ -31,31 +31,15 @@ class Dispatch(object):
 
 
     def update(self):
-        to_remove = []
-        for index, agent in self.agents.iteritems():
-            entity, pipe, location = agent
-            pipe.send({'command': 'tick'})
-            while pipe.poll():
-                message = pipe.recv()
-                if message['command'] == 'new_position':
-                    location = message['payload']
-                    self.agents[index] = [entity, pipe, location]
-                if message['command'] == 'kill_me':
-                    pipe.send({'command': 'die'})
-                    entity.cleanup()
-                    to_remove.append(index)
+        self.agents = [agent for agent in self.agents if agent.alive]
 
-
-        for dearly_departed in set(to_remove):
-            del self.agents[dearly_departed]
-
+        for agent in self.agents:
+            agent.tick()
       
 
     def create_agent_at(self, location):
-        dispatch_end, agent_end = multiprocessing.Pipe()
-        agent = Agent(agent_end, location)
-        dispatch_end.send({'command': 'update_map', 'payload': self.map.graph})
-        self.agents[self.iterator.next()] = [agent, dispatch_end, location]
+        agent = Agent(location, self)
+        self.agents.append(agent)
     
 
     def create_exit_at(self, location):
