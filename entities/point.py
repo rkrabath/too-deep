@@ -17,10 +17,13 @@ class Point(object):
         return "({0},{1},{2})".format(self.z, self.x, self.y)
 
     def __eq__(self, other):
-        if self.z == other.z:
-            if self.x == other.x:
-                if self.y == other.y:
-                    return True
+        try:
+            if self.z == other.z:
+                if self.x == other.x:
+                    if self.y == other.y:
+                        return True
+        except AttributeError:
+            return False
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -31,6 +34,33 @@ class Point(object):
     def xy(self):
         return (self.x, self.y)
 
+    def left_neighbor(self):
+        try:
+            return Point(self.z, self.x-1, self.y)
+        except ValueError:
+            return None
+
+    def right_neighbor(self):
+        try:
+            return Point(self.z, self.x+1, self.y)
+        except ValueError:
+            return None
+
+    def top_neighbor(self):
+        try:
+            return Point(self.z, self.x, self.y-1)
+        except ValueError:
+            return None
+
+    def bottom_neighbor(self):
+        try:
+            return Point(self.z, self.x, self.y+1)
+        except ValueError:
+            return None
+
     def xy_display(self, scale):
         return (self.x * scale, self.y * scale )
+
+    def xy_display_offset(self, scale):
+        return (self.x * scale - scale / 2, self.y * scale - scale / 2)
 

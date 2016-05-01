@@ -10,8 +10,8 @@ import entities as e
 
 
 min = 0
-max = 100
-scale = 10
+max = 32
+scale = 32
 
 map = e.Map(max)
 dispatch = e.Dispatch(map)
