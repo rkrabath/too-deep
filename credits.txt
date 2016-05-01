@@ -5,6 +5,6 @@ Graphics:
     Stone tile:
         - idoh40 -- http://opengameart.org/users/idoh40
         - Ryan Krabath
-    Surface tile:
-        - Buch -- http://opengameart.org/users/buch
+    Surface tiles:
+        - Michele "Buch" Bucelli -- http://opengameart.org/users/buch
     
