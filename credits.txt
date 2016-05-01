@@ -7,4 +7,5 @@ Graphics:
         - Ryan Krabath
     Surface tiles:
         - Michele "Buch" Bucelli -- http://opengameart.org/users/buch
-    
+        - Ivan Voirol -- http://opengameart.org/users/silver-iv
+        
