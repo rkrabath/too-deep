@@ -38,6 +38,10 @@ class Display(object):
         self.underground_textures['top_left'] = pygame.image.load('graphics/wall_top_left.png')
         self.underground_textures['topbottom'] = pygame.image.load('graphics/wall_topbottom.png')
         self.underground_textures['rightleft'] = pygame.image.load('graphics/wall_rightleft.png')
+        self.underground_textures['topbottom_left'] = pygame.image.load('graphics/wall_topbottom_left.png')
+        self.underground_textures['topbottom_right'] = pygame.image.load('graphics/wall_topbottom_right.png')
+        self.underground_textures['top_rightleft'] = pygame.image.load('graphics/wall_top_rightleft.png')
+        self.underground_textures['bottom_rightleft'] = pygame.image.load('graphics/wall_bottom_rightleft.png')
         self.underground_textures['stone'] = pygame.image.load('graphics/stone.png')
 
         # set up the window
@@ -133,6 +137,14 @@ class Display(object):
                 self.DISPLAYSURF.blit(self.underground_textures['rightleft'], node.xy_display_offset(self.scale))
             elif right and left:
                 self.DISPLAYSURF.blit(self.underground_textures['topbottom'], node.xy_display_offset(self.scale))
+            elif right:
+                self.DISPLAYSURF.blit(self.underground_textures['topbottom_left'], node.xy_display_offset(self.scale))
+            elif left:
+                self.DISPLAYSURF.blit(self.underground_textures['topbottom_right'], node.xy_display_offset(self.scale))
+            elif top:
+                self.DISPLAYSURF.blit(self.underground_textures['bottom_rightleft'], node.xy_display_offset(self.scale))
+            elif bottom:
+                self.DISPLAYSURF.blit(self.underground_textures['top_rightleft'], node.xy_display_offset(self.scale))
             else:
                 self.DISPLAYSURF.blit(self.underground_textures['stone'], node.xy_display_offset(self.scale))
                 

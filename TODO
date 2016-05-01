@@ -3,7 +3,6 @@ wait() for an event, especially if we lose focus.
         only when something changes
 Add layers
 Add panning (Make the map bigger than what fits on the screen
-Fix the 'blind alley' sprite
 Fix pathfinding (it broke)
 don't allow creachers to occupy the same space (collision detection)
 Add sprites for dwarves 
