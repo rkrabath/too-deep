@@ -5,4 +5,8 @@ Add layers
 Add panning (Make the map bigger than what fits on the screen
 Fix pathfinding (it broke)
 don't allow creachers to occupy the same space (collision detection)
-Add sprites for dwarves 
+Designate activities
+    build wall
+    dig stairs
+    dig tunnel
+Show different dwarf sprites depending on equipment

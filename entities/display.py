@@ -43,9 +43,10 @@ class Display(object):
         self.underground_textures['top_rightleft'] = pygame.image.load('graphics/wall_top_rightleft.png')
         self.underground_textures['bottom_rightleft'] = pygame.image.load('graphics/wall_bottom_rightleft.png')
         self.underground_textures['stone'] = pygame.image.load('graphics/stone.png')
+        self.dwarves = pygame.image.load('graphics/dwarves.png')
 
         # set up the window
-        pygame.display.set_caption('Drawing')
+        pygame.display.set_caption('Too Deep')
 
 
     def level_down(self):
@@ -71,13 +72,7 @@ class Display(object):
 
     def draw_agents(self):
         for agent in self.dispatch.agents:
-            x, y = agent.location.xy()
-            pygame.draw.circle(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale-self.scale/4), self.scale/8, self.scale/25)
-            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale-self.scale/8),(x*self.scale, y*self.scale+self.scale/8), self.scale/25)
-            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale),(x*self.scale+self.scale/8, y*self.scale-self.scale/8), self.scale/25)
-            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale),(x*self.scale-self.scale/8, y*self.scale-self.scale/8), self.scale/25)
-            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale+self.scale/8),(x*self.scale+self.scale/8, y*self.scale+self.scale/4), self.scale/25)
-            pygame.draw.line(self.DISPLAYSURF, self.BLUE, (x*self.scale, y*self.scale+self.scale/8),(x*self.scale-self.scale/8, y*self.scale+self.scale/4), self.scale/25)
+            self.DISPLAYSURF.blit(self.dwarves, agent.location.xy_display_offset(self.scale), area=pygame.Rect(0,0,32,32))
 
     
     def draw_exit(self):
@@ -108,9 +103,6 @@ class Display(object):
                 continue
             pygame.draw.circle(self.DISPLAYSURF, self.BLUE, node.xy_display(self.scale), self.scale/5, 0)
             incomming_links = self.map.get_incident_edges(node)
-            print "Layer: {0}".format(self.layer)
-            print "Node: {0}".format(node)
-            print "Neighbors: {0}".format(incomming_links)
             left = node.left_neighbor() in incomming_links
             right = node.right_neighbor() in incomming_links
             top = node.top_neighbor() in incomming_links
@@ -147,24 +139,11 @@ class Display(object):
                 self.DISPLAYSURF.blit(self.underground_textures['top_rightleft'], node.xy_display_offset(self.scale))
             else:
                 self.DISPLAYSURF.blit(self.underground_textures['stone'], node.xy_display_offset(self.scale))
-                
-                
-                
-            
-                
-            
-            
-# Layer: 32
-# Node: (32,2,30)
-# Neighbors: [(32,3,30), (32,2,29), (32,1,30), (32,2,31)]
 
-            
-            
-
-        for edge in nx.edges(self.map.graph):
-            if edge[0].z != self.layer or edge[1].z != self.layer:
-                continue
-            pygame.draw.line(self.DISPLAYSURF, self.GREEN, edge[0].xy_display(self.scale), edge[1].xy_display(self.scale), 1) 
+        # for edge in nx.edges(self.map.graph):
+        #     if edge[0].z != self.layer or edge[1].z != self.layer:
+        #         continue
+        #     pygame.draw.line(self.DISPLAYSURF, self.GREEN, edge[0].xy_display(self.scale), edge[1].xy_display(self.scale), 1) 
 
         self.draw_agents()
 

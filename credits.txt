@@ -8,4 +8,6 @@ Graphics:
     Surface tiles:
         - Michele "Buch" Bucelli -- http://opengameart.org/users/buch
         - Ivan Voirol -- http://opengameart.org/users/silver-iv
+    Dwarves:
+        - Wannabehero -- http://www.bay12forums.com/smf/index.php?topic=145967.0
         
