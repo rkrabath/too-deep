@@ -10,4 +10,11 @@ Graphics:
         - Ivan Voirol -- http://opengameart.org/users/silver-iv
     Dwarves:
         - Wannabehero -- http://www.bay12forums.com/smf/index.php?topic=145967.0
+    Items:
+        - Part of (or All) the graphic tiles used in this program is the Public 
+          domain roguelike tileset "RLTiles". Some of the tiles have been 
+          modified by Ryan Krabath. You can find the original tileset 
+          at: http://rltiles.sf.net.  You can find Dungeon Crawl Stone Soup modified 
+          tilesets at: http://code.google.com/p/crawl-tiles/downloads/list
+        
         

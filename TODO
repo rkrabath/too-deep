@@ -1,12 +1,22 @@
-wait() for an event, especially if we lose focus.
-    Don't continually redraw
-        only when something changes
-Add layers
-Add panning (Make the map bigger than what fits on the screen
+Roughly Prioritized List of Things to Implement (RPLoToI)
 Fix pathfinding (it broke)
-don't allow creachers to occupy the same space (collision detection)
+Extend dwarf's "desires" so they don't just sit around
+    * to eat
+    * to drink
+    * to work
+    * to make new dwarves
+        * Maybe this needs relationships to be added?
+    * to wonder aimlessly
+Add panning (Make the map bigger than what fits on the screen
 Designate activities
     build wall
     dig stairs
     dig tunnel
+Add underground graphics, and the ability to dig down
 Show different dwarf sprites depending on equipment
+Implement a 'crafting' system
+Implement buildings in which to craft
+wait() for an event, especially if we lose focus.
+    Don't continually redraw
+        only when something changes
+don't allow creachers to occupy the same space (collision detection)
