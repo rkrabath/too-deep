@@ -1,12 +1,11 @@
 Roughly Prioritized List of Things to Implement (RPLoToI)
-Fix pathfinding (it broke)
+
 Extend dwarf's "desires" so they don't just sit around
-    * to eat
     * to drink
     * to work
     * to make new dwarves
         * Maybe this needs relationships to be added?
-    * to wonder aimlessly
+    * to wander aimlessly
 Add panning (Make the map bigger than what fits on the screen
 Designate activities
     build wall

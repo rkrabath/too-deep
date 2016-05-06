@@ -47,6 +47,9 @@ class Dispatch(object):
     def create_item_at(self, location):
         item = Item('food', 'meat', location)
         self.items.append(item)
+        
+        for agent in self.agents:
+            agent.inform_of_new_item(item)
 
 
     def create_exit_at(self, location):
