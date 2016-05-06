@@ -44,6 +44,7 @@ class Display(object):
         self.underground_textures['bottom_rightleft'] = pygame.image.load('graphics/wall_bottom_rightleft.png')
         self.underground_textures['stone'] = pygame.image.load('graphics/stone.png')
         self.dwarves = pygame.image.load('graphics/dwarves.png')
+        self.items = pygame.image.load('graphics/items.png')
 
         # set up the window
         pygame.display.set_caption('Too Deep')
@@ -73,6 +74,11 @@ class Display(object):
     def draw_agents(self):
         for agent in self.dispatch.agents:
             self.DISPLAYSURF.blit(self.dwarves, agent.location.xy_display_offset(self.scale), area=pygame.Rect(0,0,32,32))
+
+
+    def draw_items(self):
+        for item in self.dispatch.items:
+            self.DISPLAYSURF.blit(self.items, item.location.xy_display_offset(self.scale), area=pygame.Rect(1152,736,32,32))
 
     
     def draw_exit(self):
@@ -144,6 +150,7 @@ class Display(object):
         #     if edge[0].z != self.layer or edge[1].z != self.layer:
         #         continue
         #     pygame.draw.line(self.DISPLAYSURF, self.GREEN, edge[0].xy_display(self.scale), edge[1].xy_display(self.scale), 1) 
+        self.draw_items()
 
         self.draw_agents()
 

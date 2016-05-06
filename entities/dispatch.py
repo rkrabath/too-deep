@@ -7,11 +7,13 @@ import networkx as nx
 from pygame.locals import *
 
 from agent import Agent
+from item import Item
 from point import Point
 
 class Dispatch(object):
     def __init__(self, map):
         self.agents = []
+        self.items = []
         self.exit = None
         self.map = map
         
@@ -19,8 +21,8 @@ class Dispatch(object):
 
         middle = map.max/2
         self.create_exit_at(Point(map.max, middle, middle))
+        self.create_item_at(Point(map.max, 2, 2))
         print Point(map.max, middle, middle)
-
 
     
     def auto_increment(self):
@@ -41,6 +43,11 @@ class Dispatch(object):
         agent = Agent(location, self)
         self.agents.append(agent)
     
+
+    def create_item_at(self, location):
+        item = Item('food', 'meat', location)
+        self.items.append(item)
+
 
     def create_exit_at(self, location):
         if self.exit:
