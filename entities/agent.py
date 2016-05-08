@@ -2,6 +2,7 @@
 
 import sys
 import pygame
+import random
 import multiprocessing
 import networkx as nx
 from pygame.locals import *
@@ -71,6 +72,10 @@ class Agent(object):
         self.items = []
         self.route = None
 
+        self.hunger_percent = 70 
+        self.thirst_percent = 20
+        self.tired_percent = 0
+
         self.goals = [
             'exit',
             'food',
@@ -97,14 +102,20 @@ class Agent(object):
                 self.items.append(message['payload'])
 
 
-
     def greatest_desire(self):
-        return 'food'
-        return 'work'
+        if self.hunger_percent > 75:
+            return 'food'
+        if self.thirst_percent > 75:
+            return 'drink'
         return 'wander'
+        return 'work'
 
         
     def act(self):
+        if self.hunger_percent > 75 and 'food' in self.items_at_location(self.location): # This probably doesn't work
+            hunger_percent = 0
+        if self.thirst_percent > 75 and 'drink' in self.items_at_location(self.location): # This probably doesn't work
+            thirst_percent = 0
         if not self.route:
             print('no route found')
             goal = self.greatest_desire()
@@ -115,21 +126,31 @@ class Agent(object):
                 print("computing new route")
                 self.route = self.pathfind_to(target_location)
 
-
         self.follow_route()
 
         if not self.still_alive():
             self.parent.send({'command': 'kill_me'})
 
+    
+    def items_at_location(self, location):
+        return [item for item in self.items if item['location'] == location]
+
 
     def get_location_of_category(self, category):
+        if category == 'wander':
+            return random.choice(list(nx.all_neighbors(self.map, self.location)))
         for item in self.items:
             print item
             if item['category'] == category:
                 return item['location']
 
+
     def still_alive(self):
-        if Point(100,50,50) == self.location:
+        if self.hunger_percent > 105: 
+            print('Died of hunger!')
+            return False
+        elif self.thirst_percent > 105:
+            print('Died of thirst!')
             return False
         else:
             return True
@@ -154,3 +175,5 @@ class Agent(object):
         # TODO: add some verification here to ensure we don't move through walls
         self.location = destination
         self.parent.send({'command': 'new_position', 'payload': destination})
+        self.hunger_percent += 1
+        self.thirst_percent += 1
