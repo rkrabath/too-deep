@@ -14,13 +14,11 @@ class Dispatch(object):
     def __init__(self, map):
         self.agents = []
         self.items = []
-        self.exit = None
         self.map = map
         
         self.iterator = self.auto_increment()
 
         middle = map.max/2
-        self.create_exit_at(Point(map.max, middle, middle))
         self.create_item_at(Point(map.max, 2, 2))
         print Point(map.max, middle, middle)
 
@@ -52,12 +50,4 @@ class Dispatch(object):
             agent.inform_of_new_item(item)
 
 
-    def create_exit_at(self, location):
-        if self.exit:
-            raise ValueError('The exit was already placed.')
-        self.exit = location
 
-
-    def find(self, thing):
-        if thing == 'exit':
-            return self.exit

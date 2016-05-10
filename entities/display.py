@@ -82,12 +82,6 @@ class Display(object):
             self.DISPLAYSURF.blit(self.items, item.location.xy_display_offset(self.scale), area=pygame.Rect(1152,736,32,32))
 
     
-    def draw_exit(self):
-        if self.dispatch.exit:
-            x,y = self.dispatch.exit.xy()
-            pygame.draw.rect(self.DISPLAYSURF, self.BLACK, pygame.Rect(x * self.scale, y * self.scale, self.scale, self.scale), self.scale/20)
-
-
     def highlight_node(self, point):
         self.highlighted_coordinate = point
 
@@ -155,8 +149,6 @@ class Display(object):
         self.draw_items()
 
         self.draw_agents()
-
-        self.draw_exit()
 
         self.show_highlight()
     

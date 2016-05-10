@@ -77,7 +77,6 @@ class Agent(object):
         self.tired_percent = 0
 
         self.goals = [
-            'exit',
             'food',
             'drink',
         ]
