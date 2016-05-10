@@ -45,10 +45,14 @@ class Agent(object):
             if message['command'] == 'new_position':
                 self.location = message['payload']
             if message['command'] == 'kill_me':
-                self.parent_end.send({'command': 'die'})
-                self.cleanup()
-                self.alive = False
+                self.exit()
 
+
+    def exit(self):
+        self.parent_end.send({'command': 'die'})
+        self.cleanup()
+        self.alive = False
+        
 
     def inform_of_new_item(self, new_item):
         item_payload = {

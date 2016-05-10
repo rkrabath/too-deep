@@ -24,6 +24,7 @@ class Input(object):
         self.ignored_input_types = [ ACTIVEEVENT, MOUSEBUTTONUP, KEYUP]
 
     def exit(self):
+        self.dispatch.exit()
         pygame.quit()
         sys.exit()
         

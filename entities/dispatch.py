@@ -49,5 +49,9 @@ class Dispatch(object):
         for agent in self.agents:
             agent.inform_of_new_item(item)
 
+    
+    def exit(self):
+        for agent in self.agents:
+            agent.exit()
 
 
