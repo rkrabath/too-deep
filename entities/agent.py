@@ -16,19 +16,10 @@ class Agent(object):
 
         self.parent_end, child_end = multiprocessing.Pipe()
 
-        self.process = multiprocessing.Process(target=self.main_loop, args=(child_end, ))
+        self.process = multiprocessing.Process(target=self.main_loop, args=(child_end, dispatch.items))
         self.process.start()
 
         self.parent_end.send({'command': 'update_map', 'payload': self.dispatch.map.graph})
-
-        items_payload = [
-                {
-                    'category': x.category,
-                    'name': x.name,
-                    'location': x.location,
-                } for x in self.dispatch.items 
-            ]
-        self.parent_end.send({'command': 'update_items', 'payload': items_payload})
 
         self.alive = True
 
@@ -54,18 +45,9 @@ class Agent(object):
         self.alive = False
         
 
-    def inform_of_new_item(self, new_item):
-        item_payload = {
-                    'category': new_item.category,
-                    'name': new_item.name,
-                    'location': new_item.location,
-                } 
-        self.parent_end.send({'command': 'new_item', 'payload': item_payload})
-
-
 ############ Below here is the child process ############################
 
-    def main_loop(self, parent):
+    def main_loop(self, parent, items):
 
         self.dispatch = None # It's in a different process now...
 
@@ -73,7 +55,7 @@ class Agent(object):
 
         # Initialize some variables in the child
         self.map = None
-        self.items = []
+        self.items = items # self.items is a proxy object: https://docs.python.org/2/library/multiprocessing.html#proxy-objects
         self.route = None
 
         self.hunger_percent = 70 
@@ -97,9 +79,6 @@ class Agent(object):
 
             if message['command'] == 'update_map':
                 self.map = message['payload']
-            
-            if message['command'] == 'update_items':
-                self.items = message['payload']
 
             if message['command'] == 'new_item':
                 self.items.append(message['payload'])
@@ -136,16 +115,15 @@ class Agent(object):
 
     
     def items_at_location(self, location):
-        return [item for item in self.items if item['location'] == location]
+        return [item for item in self.items if item.location == location]
 
 
     def get_location_of_category(self, category):
         if category == 'wander':
             return random.choice(list(nx.all_neighbors(self.map, self.location)))
         for item in self.items:
-            print item
-            if item['category'] == category:
-                return item['location']
+            if item.category == category:
+                return item.location
 
 
     def still_alive(self):

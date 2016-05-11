@@ -12,9 +12,10 @@ from point import Point
 
 class Dispatch(object):
     def __init__(self, map):
-        self.agents = []
-        self.items = []
         self.map = map
+        self.agents = []
+        self.state_manager = multiprocessing.Manager()
+        self.items = self.state_manager.list()
         
         self.iterator = self.auto_increment()
 
