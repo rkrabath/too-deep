@@ -17,18 +17,9 @@ class Dispatch(object):
         self.state_manager = multiprocessing.Manager()
         self.items = self.state_manager.list()
         
-        self.iterator = self.auto_increment()
-
-        middle = map.max/2
         self.create_item_at(Point(map.max, 2, 2))
-        print Point(map.max, middle, middle)
 
-    
-    def auto_increment(self):
-        next_value = 0
-        while True:
-            yield next_value
-            next_value += 1
+
 
 
     def update(self):
