@@ -1,5 +1,12 @@
 Roughly Prioritized List of Things to Implement (RPLoToI)
 
+Implement data files for agents and items
+	* Agents are granted capabilities based on
+		* What they're carrying
+		* Where they're standing
+	* Activities require capabilities
+		* can_dig granted by pick-axe
+		* can_craft granted by crafting building
 Extend dwarf's "desires" so they don't just sit around
     * to drink
     * to work
@@ -11,8 +18,10 @@ Designate activities
     dig stairs
     dig tunnel
 Add underground graphics, and the ability to dig down
-Implement data files for agents and items
-Show different dwarf sprites depending on equipment
+Implement agent-specific inventory
+	* drop contents upon death
+	* Inventory changes sprite (Show different dwarf sprites depending on equipment)
+	* auto-pickup of necessary tools
 Implement a 'crafting' system
 Implement buildings in which to craft
 Implement data files for buildings and crafts
@@ -20,3 +29,4 @@ wait() for an event, especially if we lose focus.
     Don't continually redraw
         only when something changes
 don't allow agents to occupy the same space (collision detection)
+Add professions (agents will prefferentially do work that matches their profession)
