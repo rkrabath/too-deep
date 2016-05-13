@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
+import os
 import sys
+import yaml
 import pygame
 import multiprocessing
 import networkx as nx
@@ -16,10 +18,10 @@ class Dispatch(object):
         self.agents = []
         self.state_manager = multiprocessing.Manager()
         self.items = self.state_manager.list()
-        
-        self.create_item_at(Point(map.max, 2, 2))
 
-
+        self.create_item_at('food/meat/shank', Point(map.max, 2, 2))
+        self.create_item_at('food/meat/bacon', Point(map.max, 2, 3))
+        self.create_item_at('food/meat/steak', Point(map.max, 2, 4))
 
 
     def update(self):
@@ -34,12 +36,9 @@ class Dispatch(object):
         self.agents.append(agent)
     
 
-    def create_item_at(self, location):
-        item = Item('food', 'meat', location)
+    def create_item_at(self, item_type, location):
+        item = Item(item_type, location)
         self.items.append(item)
-        
-        for agent in self.agents:
-            agent.inform_of_new_item(item)
 
     
     def exit(self):

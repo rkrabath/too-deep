@@ -79,7 +79,7 @@ class Display(object):
 
     def draw_items(self):
         for item in self.dispatch.items:
-            self.DISPLAYSURF.blit(self.items, item.location.xy_display_offset(self.scale), area=pygame.Rect(1152,736,32,32))
+            self.DISPLAYSURF.blit(self.items, item.location.xy_display_offset(self.scale), area=item.sprite)
 
     
     def highlight_node(self, point):
