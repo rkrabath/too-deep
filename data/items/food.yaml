@@ -1,0 +1,19 @@
+meat:
+    shank:
+        sprite: '1152,736,32,32'
+        capabilities:
+            - satiate
+    steak:
+        sprite: '1376,736,32,32'
+        capabilities:
+            - satiate
+    bacon:
+        sprite: '992,736,32,32'
+        capabilities:
+            - satiate
+    sausage:
+        sprite: '1568,736,32,32'
+        capabilities:
+            - satiate
+        
+
