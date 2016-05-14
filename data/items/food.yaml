@@ -3,6 +3,11 @@ meat:
         sprite: '1152,736,32,32'
         capabilities:
             - satiate
+    rotten_shank:
+        sprite: '1184,736,32,32'
+        capabilities:
+            - satiate
+            - poison
     steak:
         sprite: '1376,736,32,32'
         capabilities:
@@ -15,5 +20,69 @@ meat:
         sprite: '1568,736,32,32'
         capabilities:
             - satiate
-        
-
+dairy:
+    cave_grub_cheese:
+        sprite: '1088,736,32,32' 
+        capabilities:
+            - satiate
+    cave_grub_spawn:
+        sprite: '1248,736,32,32'
+        capabilities:
+            - satiate
+            - intoxicate
+    giant_fungus_spore:
+        sprite: '1312,736,32,32'
+        capabilities:
+            - brew
+    rotten_giant_fungus_spore:
+        sprite: '1472,736,32,32'
+        capabilities:
+            - brew
+plant:
+    apple:
+        sprite: '800,736,32,32' 
+        capabilities:
+            - satiate
+            - brew
+    peach:
+        sprite: '832,736,32,32' 
+        capabilities:
+            - satiate
+            - brew
+    banana:
+        sprite: '864,736,32,32' 
+        capabilities:
+            - satiate
+    cave_mellon:
+        sprite: '896,736,32,32' 
+        capabilities:
+            - satiate
+            - brew
+    grapes:
+        sprite: '1152,736,32,32' 
+        capabilities:
+            - satiate
+            - brew
+    orange:
+        sprite: '1408,736,32,32' 
+        capabilities:
+            - satiate
+    pear:
+        sprite: '1440,736,32,32' 
+        capabilities:
+            - satiate
+            - brew
+    pea:
+        sprite: '1568,736,32,32' 
+        capabilities:
+            - satiate
+    strawberry:
+        sprite: '1600,736,32,32' 
+        capabilities:
+            - satiate
+            - brew
+    cavern_berry:
+        sprite: '1632,736,32,32' 
+        capabilities:
+            - satiate
+            - brew
