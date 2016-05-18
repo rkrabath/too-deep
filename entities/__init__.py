@@ -3,3 +3,4 @@ from display import Display
 from point import Point
 from input import Input
 from map import Map
+from agent import Agent
