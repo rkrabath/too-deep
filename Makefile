@@ -16,3 +16,8 @@ env/bin/activate: requirements.txt
 
 run: env
 	./game.py
+
+test:
+	coverage run --source entities/ --include *.py env/bin/nose2 && coverage report
+
+
