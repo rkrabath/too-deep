@@ -16,4 +16,10 @@ class TestAgent(unittest.TestCase):
 	def test_subprocess(self):
 		assert os.getpid() != self.agent.process.pid
 
+	def test_move_during_tick(self)
+		original_location = self.agent.location
+		self.agent.tick()
+		current_location = self.agent.location
+		assert current_location != original_location
+
 	
