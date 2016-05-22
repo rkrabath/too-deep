@@ -1,3 +1,4 @@
+COVERAGE := coverage run --source entities/ --include *.py env/bin/nose2
 
 env: env/bin/activate /usr/lib/python2.7/dist-packages/pygame
 
@@ -17,7 +18,17 @@ env/bin/activate: requirements.txt
 run: env
 	./game.py
 
-test:
-	coverage run --source entities/ --include *.py env/bin/nose2 && coverage report
+.coverage: tests/* entities/*
+	coverage run --source entities/ --include *.py env/bin/nose2
+	
 
+test: .coverage 
+	coverage report
 
+annotate: .coverage
+	coverage annotate
+
+clean:
+	rm -f .coverage entities/*,cover */*.pyc
+
+.PHONY: test
