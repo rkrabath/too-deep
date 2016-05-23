@@ -89,8 +89,8 @@ class Agent(object):
             return 'food'
         if self.thirst_percent > 75:
             return 'drink'
-        return 'wander'
-        return 'work'
+        # return 'work'
+	return None
 
         
     def act(self):
@@ -99,13 +99,9 @@ class Agent(object):
         if self.thirst_percent > 75 and 'drink' in self.items_at_location(self.location): # This probably doesn't work
             thirst_percent = 0
         if not self.route:
-            print('no route found')
             goal = self.greatest_desire()
             target_location = self.get_location_of_category(goal)
-            print self.location, target_location
-            print type(self.location), type(target_location)
             if target_location != self.location:
-                print("computing new route")
                 self.route = self.pathfind_to(target_location)
 
         self.follow_route()
@@ -119,8 +115,6 @@ class Agent(object):
 
 
     def get_location_of_category(self, category):
-        if category == 'wander':
-            return random.choice(list(nx.all_neighbors(self.map, self.location)))
         for item in self.items:
             if item.category == category:
                 return item.location
@@ -147,9 +141,9 @@ class Agent(object):
     def follow_route(self):
         if self.route:
             next_location = self.route.pop(0)
-            self._move_to(next_location)
         else:
-            print "NO ROUTE DEFINED"
+            next_location = random.choice(list(nx.all_neighbors(self.map, self.location)))
+        self._move_to(next_location)
                 
 
     def _move_to(self, destination):
