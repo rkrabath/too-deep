@@ -19,8 +19,8 @@ run: env
 	./game.py
 
 .coverage: tests/* entities/*
-	coverage run --source entities/ --include *.py env/bin/nose2
-	
+	coverage run env/bin/nose2
+	coverage combine .coverage.*
 
 test: .coverage 
 	coverage report
@@ -29,6 +29,6 @@ annotate: .coverage
 	coverage annotate
 
 clean:
-	rm -f .coverage entities/*,cover */*.pyc
+	rm -f .coverage .coverage.* entities/*,cover */*.pyc
 
 .PHONY: test
