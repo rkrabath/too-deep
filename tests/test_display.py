@@ -35,13 +35,10 @@ class TestDisplay(unittest.TestCase):
 		self.display.show_highlight()
 
 	def test_update(self):
-		old_image = self.display.DISPLAYSURF.get_view()
+		old_image = self.display.DISPLAYSURF.get_buffer().raw
 		self.display.highlight_node(e.Point(10,2,2))
 		self.display.update()
-		new_image = self.display.DISPLAYSURF.get_view()
-		print old_image
-		print dir(old_image)
-		print new_image
+		new_image = self.display.DISPLAYSURF.get_buffer().raw
 		assert old_image != new_image
 
 
