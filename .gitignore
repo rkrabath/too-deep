@@ -1,6 +1,7 @@
 *.pyc
 env
 .coverage
+.coverage.*
 *.swp
 *,cover
 
