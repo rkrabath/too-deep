@@ -1,2 +1,4 @@
 networkx==1.10
 pyyaml
+nose2
+coverage

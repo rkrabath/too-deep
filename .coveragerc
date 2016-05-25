@@ -1,0 +1,5 @@
+[run]
+concurrency = multiprocessing
+parallel = True
+source = entities/
+include = *.py
