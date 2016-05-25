@@ -9,7 +9,7 @@ from point import Point
 
 class Display(object):
 
-    def __init__(self, map, dispatch, scale):
+    def __init__(self, map, scale):
         # set up the colors
         self.BLACK = (  0,   0,   0)
         self.WHITE = (255, 255, 255)
@@ -18,7 +18,6 @@ class Display(object):
         self.BLUE  = (  0,   0, 255)
         pygame.init()
         self.map = map
-        self.dispatch = dispatch
         self.scale = scale
         self.layer = self.map.max
         self.highlighted_coordinate = None
@@ -72,13 +71,13 @@ class Display(object):
         return Point(self.layer, *protopoint)
         
 
-    def draw_agents(self):
-        for agent in self.dispatch.agents:
+    def draw_agents(self, agents):
+        for agent in agents:
             self.DISPLAYSURF.blit(self.dwarves, agent.location.xy_display_offset(self.scale), area=pygame.Rect(0,0,32,32))
 
 
-    def draw_items(self):
-        for item in self.dispatch.items:
+    def draw_items(self, items):
+        for item in items:
             self.DISPLAYSURF.blit(self.items, item.location.xy_display_offset(self.scale), area=item.sprite)
 
     
@@ -95,7 +94,7 @@ class Display(object):
             self.DISPLAYSURF.blit(s, display_point)
 
 
-    def update(self):
+    def update(self, agents, items):
         # draw on the surface object
         self.DISPLAYSURF.fill(self.WHITE)
 
@@ -146,9 +145,9 @@ class Display(object):
         #     if edge[0].z != self.layer or edge[1].z != self.layer:
         #         continue
         #     pygame.draw.line(self.DISPLAYSURF, self.GREEN, edge[0].xy_display(self.scale), edge[1].xy_display(self.scale), 1) 
-        self.draw_items()
+        self.draw_items(items)
 
-        self.draw_agents()
+        self.draw_agents(agents)
 
         self.show_highlight()
     

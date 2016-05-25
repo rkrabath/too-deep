@@ -7,7 +7,7 @@ class TestInput(unittest.TestCase):
         def setUp(self):
                 map_object = e.Map(10)
                 dispatch_object = e.Dispatch(map_object)
-                display_object = e.Display(map_object, dispatch_object, 10)
+                display_object = e.Display(map_object, 10)
 		self.input = e.Input(display_object, dispatch_object)
 
 
