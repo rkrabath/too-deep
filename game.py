@@ -13,12 +13,12 @@ min = 0
 max = 32
 scale = 32
 
-map = e.Map(max)
-dispatch = e.Dispatch(map)
-display = e.Display(map, scale)
+game_map = e.map
+game_map.init(32)
+dispatch = e.Dispatch()
+display = e.Display(scale)
 input = e.Input(display, dispatch)
             
-#map.print_grid()
 print "================================="
 
 
