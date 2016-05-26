@@ -8,6 +8,7 @@ import networkx as nx
 from pygame.locals import *
 
 from point import Point
+import map as game_map
 
 class Agent(object):
     def __init__(self, initial_location, dispatch):
@@ -19,7 +20,7 @@ class Agent(object):
         self.process = multiprocessing.Process(target=self.main_loop, args=(child_end, dispatch.items))
         self.process.start()
 
-        self.parent_end.send({'command': 'update_map', 'payload': self.dispatch.map.graph})
+        self.parent_end.send({'command': 'update_map', 'payload': game_map.graph})
 
         self.alive = True
 

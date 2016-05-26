@@ -6,10 +6,11 @@ import pygame
 from pygame.locals import *
 
 from point import Point
+import map as map_object
 
 class Display(object):
 
-    def __init__(self, map, scale):
+    def __init__(self, scale):
         # set up the colors
         self.BLACK = (  0,   0,   0)
         self.WHITE = (255, 255, 255)
@@ -17,12 +18,12 @@ class Display(object):
         self.GREEN = (  0, 255,   0)
         self.BLUE  = (  0,   0, 255)
         pygame.init()
-        self.map = map
         self.scale = scale
-        self.layer = self.map.max
+        self.map = map_object
+        self.layer = self.map.layer_max
         self.highlighted_coordinate = None
     
-        dimension = self.scale * self.map.max + 2
+        dimension = self.scale * self.map.layer_max + 2
         self.DISPLAYSURF = pygame.display.set_mode((dimension, dimension), pygame.SRCALPHA, 32)
         self.surface_texture = pygame.image.load('graphics/surface_tiles.png')
         self.underground_texture = pygame.image.load('graphics/underground_tiles.png')
@@ -51,13 +52,13 @@ class Display(object):
 
 
     def level_down(self):
-        if not self.layer - 1 < self.map.min:
+        if not self.layer - 1 < self.map.layer_min:
             self.layer -= 1
         print "Displaying layer " + str(self.layer)
 
         
     def level_up(self):
-        if not self.layer + 1 > self.map.max:
+        if not self.layer + 1 > self.map.layer_max:
             self.layer += 1
         print "Displaying layer " + str(self.layer)
 

@@ -13,15 +13,10 @@ from item import Item
 from point import Point
 
 class Dispatch(object):
-    def __init__(self, map):
-        self.map = map
+    def __init__(self):
         self.agents = []
         self.state_manager = multiprocessing.Manager()
         self.items = self.state_manager.list()
-
-        self.create_item_at('food/meat/shank', Point(map.max, 2, 2))
-        self.create_item_at('food/meat/bacon', Point(map.max, 2, 3))
-        self.create_item_at('food/meat/steak', Point(map.max, 2, 4))
 
 
     def update(self):

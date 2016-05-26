@@ -1,8 +1,6 @@
 Roughly Prioritized List of Things to Implement (RPLoToI)
 
 Refactor
-	* Display shouldn't require Dispatch (Dispatch can call into Display with necessary data)
-	* Can Map be global?  It really is global...
 	* Input shouldn't need Display or Dispatch
 	* Can Display and Input be handled in a seperate thread?
 
