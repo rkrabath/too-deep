@@ -11,13 +11,13 @@ from point import Point
 import map as game_map
 
 class Agent(object):
-    def __init__(self, initial_location, dispatch):
+    def __init__(self, initial_location, dispatch, hunger_percent=0, thirst_percent=0):
         self.location = initial_location 
         self.dispatch = dispatch
 
         self.parent_end, child_end = multiprocessing.Pipe()
 
-        self.process = multiprocessing.Process(target=self.main_loop, args=(child_end, dispatch.items))
+        self.process = multiprocessing.Process(target=self.main_loop, args=(child_end, dispatch.items, hunger_percent, thirst_percent))
         self.process.start()
 
         self.parent_end.send({'command': 'update_map', 'payload': game_map.graph})
@@ -48,7 +48,7 @@ class Agent(object):
 
 ############ Below here is the child process ############################
 
-    def main_loop(self, parent, items):
+    def main_loop(self, parent, items, hunger_percent, thirst_percent):
 
         self.dispatch = None # It's in a different process now...
 
@@ -59,8 +59,8 @@ class Agent(object):
         self.items = items # self.items is a proxy object: https://docs.python.org/2/library/multiprocessing.html#proxy-objects
         self.route = None
 
-        self.hunger_percent = 70 
-        self.thirst_percent = 20
+        self.hunger_percent = hunger_percent
+        self.thirst_percent = thirst_percent
         self.tired_percent = 0
 
         self.goals = [
@@ -95,10 +95,10 @@ class Agent(object):
 
         
     def act(self):
-        if self.hunger_percent > 75 and 'food' in self.items_at_location(self.location): # This probably doesn't work
-            hunger_percent = 0
-        if self.thirst_percent > 75 and 'drink' in self.items_at_location(self.location): # This probably doesn't work
-            thirst_percent = 0
+        if self.hunger_percent > 75 and self.capability_at_location('satiate'): 
+            self.hunger_percent = 0
+        if self.thirst_percent > 75 and self.capability_at_location('intoxicate'): 
+            self.thirst_percent = 0
         if not self.route:
             goal = self.greatest_desire()
             target_location = self.get_location_of_category(goal)
@@ -109,6 +109,13 @@ class Agent(object):
 
         if not self.still_alive():
             self.parent.send({'command': 'kill_me'})
+
+
+    def capability_at_location(self, requested_capability):
+        for item in self.items_at_location(self.location):
+            if requested_capability in item.capabilities:
+                return True
+        return False
 
     
     def items_at_location(self, location):
