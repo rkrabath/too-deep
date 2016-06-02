@@ -3,6 +3,9 @@ import unittest
 import os
 from time import sleep
 
+import pygame
+from pygame.locals import *
+
 
 class TestInput(unittest.TestCase):
         def setUp(self):
@@ -20,5 +23,20 @@ class TestInput(unittest.TestCase):
 		self.assertRaises(SystemExit, self.input.exit)
 
 
-	def test_process(self):
+	def test_key_process(self):
+                pygame.event.post(pygame.event.Event(KEYDOWN, {
+                            'unicode': '>',
+                            'key': '>',
+                            'mod': '>',
+                            }))
+                pygame.event.post(pygame.event.Event(KEYDOWN, {
+                            'unicode': '?',
+                            'key': '?',
+                            'mod': '?',
+                            }))
 		self.input.process()
+
+
+	def test_exiting(self):
+                pygame.event.post(pygame.event.Event(QUIT))
+		self.assertRaises(SystemExit, self.input.process)
