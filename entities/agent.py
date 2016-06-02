@@ -81,15 +81,12 @@ class Agent(object):
             if message['command'] == 'update_map':
                 self.map = message['payload']
 
-            if message['command'] == 'new_item':
-                self.items.append(message['payload'])
-
 
     def greatest_desire(self):
         if self.hunger_percent > 75:
-            return 'food'
+            return 'satiate'
         if self.thirst_percent > 75:
-            return 'drink'
+            return 'intoxicate'
         # return 'work'
 	return None
 
@@ -101,7 +98,7 @@ class Agent(object):
             self.thirst_percent = 0
         if not self.route:
             goal = self.greatest_desire()
-            target_location = self.get_location_of_category(goal)
+            target_location = self.location_of_capability(goal)
             if target_location != self.location:
                 self.route = self.pathfind_to(target_location)
 
@@ -111,29 +108,27 @@ class Agent(object):
             self.parent.send({'command': 'kill_me'})
 
 
-    def capability_at_location(self, requested_capability):
+    def capability_at_location(self, capability):
         for item in self.items_at_location(self.location):
-            if requested_capability in item.capabilities:
+            if capability in item.capabilities:
                 return True
         return False
 
     
+    def location_of_capability(self, capability):
+        for item in self.items:
+            if capability in item.capabilities:
+                return item.location
+
+
     def items_at_location(self, location):
         return [item for item in self.items if item.location == location]
 
 
-    def get_location_of_category(self, category):
-        for item in self.items:
-            if item.category == category:
-                return item.location
-
-
     def still_alive(self):
         if self.hunger_percent > 105: 
-            print('Died of hunger!')
             return False
         elif self.thirst_percent > 105:
-            print('Died of thirst!')
             return False
         else:
             return True
