@@ -14,9 +14,14 @@ class TestInput(unittest.TestCase):
 			game_map.init(10)
 		except ValueError:
 			pass # Already initialized in earlier test
-                dispatch_object = e.Dispatch()
+                self.dispatch_object = e.Dispatch()
                 display_object = e.Display(10)
-		self.input = e.Input(display_object, dispatch_object)
+		self.input = e.Input(display_object, self.dispatch_object)
+
+        
+        def tearDown(self):
+            for agent in self.dispatch_object.agents:
+                agent.exit()
 
 
 	def test_exit(self):
@@ -33,6 +38,32 @@ class TestInput(unittest.TestCase):
                             'unicode': '?',
                             'key': '?',
                             'mod': '?',
+                            }))
+		self.input.process()
+
+        
+        def test_mouse_button(self):
+                # Toggle barrier on
+                pygame.event.post(pygame.event.Event(MOUSEBUTTONDOWN, {
+                            'pos': [0,0],
+                            'button': 1,
+                            }))
+                # place agent
+                pygame.event.post(pygame.event.Event(MOUSEBUTTONDOWN, {
+                            'pos': [5,5],
+                            'button': 3,
+                            }))
+                # Toggle barrier off
+                pygame.event.post(pygame.event.Event(MOUSEBUTTONDOWN, {
+                            'pos': [0,0],
+                            'button': 1,
+                            }))
+		self.input.process()
+
+
+        def test_unhandled_input(self):
+                # unknown input
+                pygame.event.post(pygame.event.Event(VIDEOEXPOSE, {
                             }))
 		self.input.process()
 
