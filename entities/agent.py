@@ -112,7 +112,7 @@ class Agent(object):
 
     
     def items_at_location(self, location):
-        return [item for item in self.items if item.location == location]
+        return [item[0] for item in self.items if item[1] == location]
 
 
     def get_location_of_category(self, category):

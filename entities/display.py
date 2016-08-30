@@ -45,7 +45,7 @@ class Display(object):
         self.textures['bottom_rightleft'] = pygame.Rect(32,192,32,32)
         self.textures['no_path'] = pygame.Rect(32,160,32,32)
         self.dwarves = pygame.image.load('graphics/dwarves.png')
-        self.items = pygame.image.load('graphics/items.png')
+        self.item_sprites = pygame.image.load('graphics/items.png')
 
         # set up the window
         pygame.display.set_caption('Too Deep')
@@ -79,7 +79,7 @@ class Display(object):
 
     def draw_items(self, items):
         for item in items:
-            self.DISPLAYSURF.blit(self.items, item.location.xy_display_offset(self.scale), area=item.sprite)
+            self.DISPLAYSURF.blit(self.item_sprites, item[1].location.xy_display_offset(self.scale), area=item.sprite)
 
     
     def highlight_node(self, point):

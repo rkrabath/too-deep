@@ -32,8 +32,8 @@ class Dispatch(object):
     
 
     def create_item_at(self, item_type, location):
-        item = Item(item_type, location)
-        self.items.append(item)
+        item = Item(item_type)
+        self.items.append((item, location))
 
     
     def exit(self):
