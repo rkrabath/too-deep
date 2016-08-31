@@ -5,8 +5,7 @@ from time import sleep
 
 class TestAgent(unittest.TestCase):
 	def setUp(self):
-		map_object = e.Map(10)
-		dispatch_object = e.Dispatch(map_object)
+		dispatch_object = e.Dispatch()
 		self.agent = e.Agent(e.Point(10,1,1), dispatch_object)
 	
 	

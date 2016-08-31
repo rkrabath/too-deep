@@ -5,6 +5,8 @@ import networkx as nx
 import pygame
 from pygame.locals import *
 
+import map as game_map
+
 class Input(object):
     def __init__(self, display, dispatch):
         self.display = display
@@ -49,10 +51,10 @@ class Input(object):
                 print "Clicked on " + ", ".join([str(x) for x in node.xy()])
                 print event.button
                 if event.button == 1:
-                    if self.display.map.is_traversable(node):
-                        self.display.map.make_not_traversable(node)
+                    if game_map.is_traversable(node):
+                        game_map.make_not_traversable(node)
                     else:
-                        self.display.map.make_traversable(node)
+                        game_map.make_traversable(node)
                 elif event.button == 3:
                     self.dispatch.create_agent_at(node)
             else:

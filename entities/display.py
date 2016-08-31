@@ -6,10 +6,11 @@ import pygame
 from pygame.locals import *
 
 from point import Point
+import map as map_object
 
 class Display(object):
 
-    def __init__(self, map, dispatch, scale):
+    def __init__(self, scale):
         # set up the colors
         self.BLACK = (  0,   0,   0)
         self.WHITE = (255, 255, 255)
@@ -17,13 +18,12 @@ class Display(object):
         self.GREEN = (  0, 255,   0)
         self.BLUE  = (  0,   0, 255)
         pygame.init()
-        self.map = map
-        self.dispatch = dispatch
         self.scale = scale
-        self.layer = self.map.max
+        self.map = map_object
+        self.layer = self.map.layer_max
         self.highlighted_coordinate = None
     
-        dimension = self.scale * self.map.max + 2
+        dimension = self.scale * self.map.layer_max + 2
         self.DISPLAYSURF = pygame.display.set_mode((dimension, dimension), pygame.SRCALPHA, 32)
         self.surface_texture = pygame.image.load('graphics/surface_tiles.png')
         self.underground_texture = pygame.image.load('graphics/underground_tiles.png')
@@ -45,20 +45,20 @@ class Display(object):
         self.textures['bottom_rightleft'] = pygame.Rect(32,192,32,32)
         self.textures['no_path'] = pygame.Rect(32,160,32,32)
         self.dwarves = pygame.image.load('graphics/dwarves.png')
-        self.items = pygame.image.load('graphics/items.png')
+        self.item_sprites = pygame.image.load('graphics/items.png')
 
         # set up the window
         pygame.display.set_caption('Too Deep')
 
 
     def level_down(self):
-        if not self.layer - 1 < self.map.min:
+        if not self.layer - 1 < self.map.layer_min:
             self.layer -= 1
         print "Displaying layer " + str(self.layer)
 
         
     def level_up(self):
-        if not self.layer + 1 > self.map.max:
+        if not self.layer + 1 > self.map.layer_max:
             self.layer += 1
         print "Displaying layer " + str(self.layer)
 
@@ -72,14 +72,14 @@ class Display(object):
         return Point(self.layer, *protopoint)
         
 
-    def draw_agents(self):
-        for agent in self.dispatch.agents:
+    def draw_agents(self, agents):
+        for agent in agents:
             self.DISPLAYSURF.blit(self.dwarves, agent.location.xy_display_offset(self.scale), area=pygame.Rect(0,0,32,32))
 
 
-    def draw_items(self):
-        for item in self.dispatch.items:
-            self.DISPLAYSURF.blit(self.items, item.location.xy_display_offset(self.scale), area=item.sprite)
+    def draw_items(self, items):
+        for item in items:
+            self.DISPLAYSURF.blit(self.item_sprites, item[1].location.xy_display_offset(self.scale), area=item.sprite)
 
     
     def highlight_node(self, point):
@@ -95,7 +95,7 @@ class Display(object):
             self.DISPLAYSURF.blit(s, display_point)
 
 
-    def update(self):
+    def update(self, agents, items):
         # draw on the surface object
         self.DISPLAYSURF.fill(self.WHITE)
 
@@ -146,9 +146,9 @@ class Display(object):
         #     if edge[0].z != self.layer or edge[1].z != self.layer:
         #         continue
         #     pygame.draw.line(self.DISPLAYSURF, self.GREEN, edge[0].xy_display(self.scale), edge[1].xy_display(self.scale), 1) 
-        self.draw_items()
+        self.draw_items(items)
 
-        self.draw_agents()
+        self.draw_agents(agents)
 
         self.show_highlight()
     

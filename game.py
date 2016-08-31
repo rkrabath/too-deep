@@ -13,12 +13,12 @@ min = 0
 max = 32
 scale = 32
 
-map = e.Map(max)
-dispatch = e.Dispatch(map)
-display = e.Display(map, dispatch, scale)
+game_map = e.map
+game_map.init(32)
+dispatch = e.Dispatch()
+display = e.Display(scale)
 input = e.Input(display, dispatch)
             
-#map.print_grid()
 print "================================="
 
 
@@ -28,7 +28,7 @@ last_time = 0.0
 while True:
     current_time = time.time()
     input.process()
-    display.update()
+    display.update(dispatch.agents, dispatch.items)
     time.sleep(0.2)
     if current_time > last_time + 1:
         dispatch.update()

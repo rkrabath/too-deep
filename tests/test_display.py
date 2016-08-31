@@ -6,9 +6,12 @@ from time import sleep
 
 class TestDisplay(unittest.TestCase):
         def setUp(self):
-                map_object = e.Map(10)
-                dispatch_object = e.Dispatch(map_object)
-                self.display = e.Display(map_object, dispatch_object, 10)
+		game_map = e.map
+                try:
+                        game_map.init(10)
+                except ValueError:
+                        pass # Already initialized in earlier test
+                self.display = e.Display(10)
 
 
         def tearDown(self):
@@ -37,7 +40,7 @@ class TestDisplay(unittest.TestCase):
 	def test_update(self):
 		old_image = self.display.DISPLAYSURF.get_buffer().raw
 		self.display.highlight_node(e.Point(10,2,2))
-		self.display.update()
+		self.display.update([],[])
 		new_image = self.display.DISPLAYSURF.get_buffer().raw
 		assert old_image != new_image
 

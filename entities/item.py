@@ -10,8 +10,7 @@ from pygame.locals import *
 from point import Point
 
 class Item(object):
-    def __init__(self, path, initial_location):
-        self.location = initial_location 
+    def __init__(self, path):
 
         tokens = path.split('/')
         file_name = tokens[0] + '.yaml'
