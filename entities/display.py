@@ -82,13 +82,13 @@ class Display(object):
             self.DISPLAYSURF.blit(self.item_sprites, item[1].location.xy_display_offset(self.scale), area=item.sprite)
 
     
-    def highlight_node(self, point):
-        self.highlighted_coordinate = point
+    def highlight_node(self, xy):
+        self.highlighted_coordinate = xy
 
 
     def show_highlight(self):
         if self.highlighted_coordinate:
-            display_point = [(x*self.scale-self.scale/2) for x in self.highlighted_coordinate.xy()]
+            display_point = [(x*self.scale-self.scale/2) for x in self.highlighted_coordinate]
             s = pygame.Surface((self.scale,self.scale))
             s.set_alpha(128)
             s.fill(self.RED)
