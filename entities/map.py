@@ -12,11 +12,9 @@ layer_max = None
 
 
 def init(new_layer_max=None):
-    print "In INIT"
     global layer_max
 
     if not layer_max: # First instantiation
-        print "initializing map"
         if new_layer_max: # caller has provided desired max size
             layer_max = new_layer_max
     

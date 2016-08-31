@@ -11,13 +11,13 @@ from point import Point
 import map as game_map
 
 class Agent(object):
-    def __init__(self, initial_location, dispatch):
+    def __init__(self, initial_location, dispatch, hunger_percent=0, thirst_percent=0):
         self.location = initial_location 
         self.dispatch = dispatch
 
         self.parent_end, child_end = multiprocessing.Pipe()
 
-        self.process = multiprocessing.Process(target=self.main_loop, args=(child_end, dispatch.items))
+        self.process = multiprocessing.Process(target=self.main_loop, args=(child_end, dispatch.items, hunger_percent, thirst_percent))
         self.process.start()
 
         self.parent_end.send({'command': 'update_map', 'payload': game_map.graph})
@@ -48,7 +48,7 @@ class Agent(object):
 
 ############ Below here is the child process ############################
 
-    def main_loop(self, parent, items):
+    def main_loop(self, parent, items, hunger_percent, thirst_percent):
 
         self.dispatch = None # It's in a different process now...
 
@@ -59,8 +59,8 @@ class Agent(object):
         self.items = items # self.items is a proxy object: https://docs.python.org/2/library/multiprocessing.html#proxy-objects
         self.route = None
 
-        self.hunger_percent = 70 
-        self.thirst_percent = 20
+        self.hunger_percent = hunger_percent
+        self.thirst_percent = thirst_percent
         self.tired_percent = 0
 
         self.goals = [
@@ -81,27 +81,24 @@ class Agent(object):
             if message['command'] == 'update_map':
                 self.map = message['payload']
 
-            if message['command'] == 'new_item':
-                self.items.append(message['payload'])
-
 
     def greatest_desire(self):
         if self.hunger_percent > 75:
-            return 'food'
+            return 'satiate'
         if self.thirst_percent > 75:
-            return 'drink'
+            return 'intoxicate'
         # return 'work'
 	return None
 
         
     def act(self):
-        if self.hunger_percent > 75 and 'food' in self.items_at_location(self.location): # This probably doesn't work
-            hunger_percent = 0
-        if self.thirst_percent > 75 and 'drink' in self.items_at_location(self.location): # This probably doesn't work
-            thirst_percent = 0
+        if self.hunger_percent > 75 and self.capability_at_location('satiate'): 
+            self.hunger_percent = 0
+        if self.thirst_percent > 75 and self.capability_at_location('intoxicate'): 
+            self.thirst_percent = 0
         if not self.route:
             goal = self.greatest_desire()
-            target_location = self.get_location_of_category(goal)
+            target_location = self.location_of_capability(goal)
             if target_location != self.location:
                 self.route = self.pathfind_to(target_location)
 
@@ -115,18 +112,27 @@ class Agent(object):
         return [item[0] for item in self.items if item[1] == location]
 
 
-    def get_location_of_category(self, category):
+    def capability_at_location(self, capability):
+        for item in self.items_at_location(self.location):
+            if capability in item.capabilities:
+                return True
+        return False
+
+    
+    def location_of_capability(self, capability):
         for item in self.items:
-            if item.category == category:
+            if capability in item.capabilities:
                 return item.location
+
+
+    def items_at_location(self, location):
+        return [item for item in self.items if item.location == location]
 
 
     def still_alive(self):
         if self.hunger_percent > 105: 
-            print('Died of hunger!')
             return False
         elif self.thirst_percent > 105:
-            print('Died of thirst!')
             return False
         else:
             return True
