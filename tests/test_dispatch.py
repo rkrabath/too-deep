@@ -13,7 +13,6 @@ class TestDispatch(unittest.TestCase):
 		assert self.dispatch_object.agents[0].location == e.Point(10,1,1)
 		self.dispatch_object.exit()
 		self.dispatch_object.update()
-		print self.dispatch_object.agents
 		assert self.dispatch_object.agents == []
 
 

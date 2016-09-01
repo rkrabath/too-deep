@@ -121,12 +121,8 @@ class Agent(object):
     
     def location_of_capability(self, capability):
         for item in self.items:
-            if capability in item.capabilities:
-                return item.location
-
-
-    def items_at_location(self, location):
-        return [item for item in self.items if item.location == location]
+            if capability in item[0].capabilities:
+                return item[1]
 
 
     def still_alive(self):

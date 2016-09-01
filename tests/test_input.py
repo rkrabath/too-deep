@@ -31,7 +31,7 @@ class TestInput(unittest.TestCase):
 	def test_key_process(self):
                 pygame.event.post(pygame.event.Event(KEYDOWN, {
                             'unicode': '>',
-                            'key': '>',
+                            'key': 46,
                             'mod': '>',
                             }))
                 pygame.event.post(pygame.event.Event(KEYDOWN, {

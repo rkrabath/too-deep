@@ -54,13 +54,11 @@ class Display(object):
     def level_down(self):
         if not self.layer - 1 < self.map.layer_min:
             self.layer -= 1
-        print "Displaying layer " + str(self.layer)
 
         
     def level_up(self):
         if not self.layer + 1 > self.map.layer_max:
             self.layer += 1
-        print "Displaying layer " + str(self.layer)
 
 
     def get_coord(self, point):
@@ -79,7 +77,11 @@ class Display(object):
 
     def draw_items(self, items):
         for item in items:
-            self.DISPLAYSURF.blit(self.item_sprites, item[1].location.xy_display_offset(self.scale), area=item.sprite)
+            try:
+                location = item[1].location.xy_display_offset(self.scale)
+            except IndexError:
+                continue
+            self.DISPLAYSURF.blit(self.item_sprites, location, area=item.sprite)
 
     
     def highlight_node(self, xy):

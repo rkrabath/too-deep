@@ -18,7 +18,7 @@ class TestDisplay(unittest.TestCase):
 		self.display = None
 
 	def test_instantiation(self):
-		print self.display.scale
+		assert self.display.scale == 10
 
 	def test_level_up_down(self):
 		# Down a level
@@ -34,13 +34,13 @@ class TestDisplay(unittest.TestCase):
 		assert new_level != old_level
 
 	def test_highlight(self):
-		self.display.highlight_node(e.Point(10,1,1))
+		self.display.highlight_node((1,1))
 		self.display.show_highlight()
 
 	def test_update(self):
 		old_image = self.display.DISPLAYSURF.get_buffer().raw
-		self.display.highlight_node(e.Point(10,2,2))
-		self.display.update([],[])
+		self.display.highlight_node((2,2))
+		self.display.update([],[[]])
 		new_image = self.display.DISPLAYSURF.get_buffer().raw
 		assert old_image != new_image
 

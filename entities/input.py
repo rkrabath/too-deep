@@ -75,9 +75,6 @@ class Input(object):
                 self.display.highlight_node(node.xy())
             elif event.type == MOUSEBUTTONDOWN:
                 node = self.display.get_coord(event.pos)
-                print "Clicked on " + ", ".join([str(x) for x in node.xy()])
-                print event.button
-                print event
                 if event.button == 1:
                     if game_map.is_traversable(node):
                         game_map.make_not_traversable(node)
