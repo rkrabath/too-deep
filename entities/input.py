@@ -1,25 +1,46 @@
 #!/usr/bin/python
 
 import sys
+import copy
 import networkx as nx
 import pygame
 from pygame.locals import *
 
 import map as game_map
 
+
+class Mode(object):
+    def __init__(self):
+	self.options = [ 'DIG' ]
+        self.current = None
+
+    def switch(self, new_mode):
+        if new_mode in self.options:
+            self.current = new_mode
+        else:
+            raise ValueError("Invalid mode: " + new_mode)
+
+    def exit(self):
+        self.current = None
+
+
+        
+
 class Input(object):
     def __init__(self, display, dispatch):
         self.display = display
         self.dispatch = dispatch
         self.cursor = [5,5]
-        self.selected = []
+        self.selected = None
+        self.selections = []
         self.shift_down = False
         self.ctrl_down = False
         self.alt_down = False
 
         self.down_options = {
-                    44 : self.display.level_up, # <
-                    46 : self.display.level_down, # >
+                    32 : self.select, # ' '
+                    44 : self.display.level_up, # '<'
+                    46 : self.display.level_down, # '>'
                    303 : self.shift_pressed,
                    304 : self.shift_pressed,
                    305 : self.ctrl_pressed,
@@ -118,4 +139,19 @@ class Input(object):
     def right(self):
         self.cursor[0] += 1    
         self.display.highlight_node(self.cursor)
+
+    def select(self):
+        if self.selected:
+            end_point = copy.copy(self.cursor)
+            self.selections.append((self.selected, end_point))
+            self.display.highlight_selections(self.selections)
+            self.selected = None
+            print self.selections
+        else:
+            self.selected = copy.copy(self.cursor)
+
+
+
+
+
 
