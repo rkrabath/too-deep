@@ -105,6 +105,49 @@ class Input(object):
                     self.dispatch.create_agent_at(node)
             else:
                 print "Unrecongized entry: ", event.type
+
+    def normalize_box(self, box):
+        """ Given a set of coordinates ((x,y),(x,y)), return the top left and bottom right points """
+        try:
+            a, b = box
+        except ValueError:
+            sys.exit("Passed something that wasn't ((x,y),(x,y)) to normalize_box()")
+
+        # a--+
+        # |  |
+        # |  |
+        # +--b
+
+        if a[0] <= b[0] and a[1] <= b[1]:
+            # happy path, no changes necessary
+            return box 
+
+        # b--+
+        # |  |
+        # |  |
+        # +--a   
+
+        if a[0] >= b[0] and a[1] >= b[1]:
+            # They're reversed.  Swap them.
+            return (b,a)  
+         
+        # +--a
+        # |  |
+        # |  |
+        # b--+
+
+        # OR
+
+        # +--b
+        # |  |
+        # |  |
+        # a--+
+
+        # Need to compute the opposite corners
+        c = (a[0],b[1])
+        d = (b[0],a[1])
+        return self.normalize_box((c,d)) # We computed new corners, 
+        #then we call back to make sure they're in the right order.
     
     def shift_pressed(self):
         self.shift_down = True
@@ -143,10 +186,10 @@ class Input(object):
     def select(self):
         if self.selected:
             end_point = copy.copy(self.cursor)
-            self.selections.append((self.selected, end_point))
+            normalized = self.normalize_box((self.selected, end_point))
+            self.selections.append(normalized)
             self.display.highlight_selections(self.selections)
             self.selected = None
-            print self.selections
         else:
             self.selected = copy.copy(self.cursor)
 
