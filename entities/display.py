@@ -23,6 +23,7 @@ class Display(object):
         self.layer = self.map.layer_max
         self.highlighted_coordinate = None
         self.highlighted_selections = None
+        self.highlighted_selecting = None
     
         dimension = self.scale * self.map.layer_max + 2
         self.DISPLAYSURF = pygame.display.set_mode((dimension, dimension), pygame.SRCALPHA, 32)
@@ -88,6 +89,9 @@ class Display(object):
     def highlight_node(self, xy):
         self.highlighted_coordinate = xy
 
+    def highlight_selecting(self, selections):
+        print selections
+        self.highlighted_selecting = selections
 
     def highlight_selections(self, selections):
         print selections
@@ -102,6 +106,15 @@ class Display(object):
             s.set_alpha(128)
             s.fill(self.RED)
             self.DISPLAYSURF.blit(s, display_point)
+        if self.highlighted_selecting:
+                start_point = self.top_left_pixel(self.highlighted_selecting[0])
+                end_point = self.bottom_right_pixel(self.highlighted_selecting[1])
+                width = end_point[0] - start_point[0]
+                height = end_point[1] - start_point[1]
+                s = pygame.Surface((width,height))
+                s.set_alpha(64)
+                s.fill(self.RED)
+                self.DISPLAYSURF.blit(s, start_point)
         if self.highlighted_selections:
             for selection in self.highlighted_selections:
                 start_point = self.top_left_pixel(selection[0])

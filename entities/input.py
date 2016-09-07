@@ -169,25 +169,34 @@ class Input(object):
 
     def up(self):
         self.cursor[1] -= 1    
-        self.display.highlight_node(self.cursor)
+        self.update_selection()
 
     def down(self):
         self.cursor[1] += 1    
-        self.display.highlight_node(self.cursor)
+        self.update_selection()
 
     def left(self):
         self.cursor[0] -= 1    
-        self.display.highlight_node(self.cursor)
+        self.update_selection()
 
     def right(self):
         self.cursor[0] += 1    
+        self.update_selection()
+
+    def update_selection(self):
         self.display.highlight_node(self.cursor)
+        if self.selected:
+            end_point = copy.copy(self.cursor)
+            normalized = self.normalize_box((self.selected, end_point))
+            self.display.highlight_selecting(normalized)
+     
 
     def select(self):
         if self.selected:
             end_point = copy.copy(self.cursor)
             normalized = self.normalize_box((self.selected, end_point))
             self.selections.append(normalized)
+            self.display.highlight_selecting(None)
             self.display.highlight_selections(self.selections)
             self.selected = None
         else:
