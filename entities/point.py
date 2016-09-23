@@ -41,10 +41,7 @@ class Point(object):
             return None
 
     def right_neighbor(self):
-        try:
-            return Point(self.z, self.x+1, self.y)
-        except ValueError:
-            return None
+        return Point(self.z, self.x+1, self.y)
 
     def top_neighbor(self):
         try:
@@ -53,10 +50,7 @@ class Point(object):
             return None
 
     def bottom_neighbor(self):
-        try:
-            return Point(self.z, self.x, self.y+1)
-        except ValueError:
-            return None
+        return Point(self.z, self.x, self.y+1)
 
     def xy_display(self, scale):
         return (self.x * scale, self.y * scale )
