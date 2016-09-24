@@ -31,13 +31,15 @@ class Box(object):
 
 
     def is_overlapping(self, other):
+        updown = False
+        leftright = False
         if self.left_edge < other.left_edge < self.right_edge:
-            return True
+            leftright = True
         if self.right_edge > other.right_edge > self.left_edge:
-            return True
+            leftright = True
         if self.top_edge < other.top_edge < self.bottom_edge:
-            return True
+            updown = True
         if self.bottom_edge > other.bottom_edge > self.top_edge:
-            return True
+            updown = True
 
-        return False
+        return updown and leftright
