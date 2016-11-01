@@ -58,9 +58,40 @@ class CompoundBox(object):
                 if num_overlapping_corners == 0:
                     raise SystemError('Box claims to be overlapping, but has no corners inside other box')
                 if num_overlapping_corners == 1:
-                    raise NotImplementedError("CompoundBox._non_overlapping_peices_:1")
                     # Hard case.  Need to chop out a corner
+                    overlapping_corner = overlapping_corners[0]
+                    if overlapping_corner == candidate_box.top_left:
+                        # top chuck
+                        new_top_right = Point(0,existing_box.right_edge, candidate_box.top_edge)
+                        new_bottom_left = Point(0,candidate_box.right_edge, existing_box.bottom_edge)
+                        sub_boxes.append(Box(new_top_right,new_bottom_left))
+                        #bottom chunk
+                        new_top_left = Point(0,candidate_box.left_edge,existing_box.bottom_edge)
+                        sub_boxes.append(Box(new_top_left,candidate_box.bottom_right))
+                    elif overlapping_corner == candidate_box.top_right:
+                        # top chunk
+                        sub_boxes.append(Box(candidate_box.top_left,existing_box.bottom_left))
+                        # bottom chunk
+                        new_top_left = Point(0,candidate_box.left_edge,existing_box.bottom_edge)
+                        sub_boxes.append(Box(new_top_left, candidate_box.bottom_right))
+                    elif overlapping_corner == candidate_box.bottom_right:
+                        # top chunk
+                        new_bottom_right = Point(0,candidate_box.right_edge,existing_box.top_edge)
+                        sub_boxes.append(Box(candidate_box.top_left,new_bottom_right))
+                        # bottom chunk
+                        new_top_left = Point(0,candidate_box.left_edge,existing_box.top_edge)
+                        new_bottom_right = Point(0,existing_box.left_edge,candidate_box.bottom_edge)
+                        sub_boxes.append(Box(new_top_left, new_bottom_right))
+                    elif overlapping_corner == candidate_box.bottom_left:
+                        # top chunk
+                        new_bottom_right = Point(0,candidate_box.right_edge,existing_box.top_edge)
+                        sub_boxes.append(Box(candidate_box.top_left, new_bottom_right))
+                        # bottom chunk
+                        sub_boxes.append(Box(existing_box.top_left,candidate_box.bottom_right))
+                    else:
+                        raise NotImplementedError("CompoundBox._non_overlapping_peices_:1:missing_case")
                 if num_overlapping_corners == 2:
+                    # set the new edge
                     if overlapping_corners[0].x == overlapping_corners[1].x:
                         # vertical line. 
                         print overlapping_corners
@@ -80,7 +111,6 @@ class CompoundBox(object):
                         sub_boxes.append(new_box)
                     else:
                         raise SystemError('Box claims to have 2 corners overlapping, but y!=y and x!=x')
-                    # set the new edge
                 if num_overlapping_corners == 3:
                     print overlapping_corners
                     raise NotImplementedError("CompoundBox._non_overlapping_peices_:2")
