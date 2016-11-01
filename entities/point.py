@@ -58,3 +58,17 @@ class Point(object):
     def xy_display_offset(self, scale):
         return (self.x * scale - scale / 2, self.y * scale - scale / 2)
 
+    def inside(self, box):
+        # print "Cheking if point " + str(self)
+        # print "is inside a box:"
+        # print "     " + str(box.top_edge)
+        # print str(box.left_edge) + "        " + str(box.right_edge)
+        # print "     " + str(box.bottom_edge)
+        # print "Checking if {0} is between {1} and {2}".format(self.x, box.left_edge, box.right_edge)
+        if box.left_edge < self.x < box.right_edge:
+            # print "Checking if {0} is between {1} and {2}".format(self.y, box.top_edge, box.bottom_edge)
+            if box.top_edge < self.y < box.bottom_edge:
+                # print "it is!"
+                return True
+        # print "it's not!"
+        return False
