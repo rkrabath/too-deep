@@ -22,8 +22,137 @@ class TestCompoundBox(unittest.TestCase):
 
         assert result_1 == self.intended_type
         assert result_2 == self.intended_type
-		
-#    def test_compound_box_computation(self):
-#        boxes = 
 
+#    def test_compound_box_overlapping_1_corner(self):
+#        # one corner overlapping boxes:
+#
+#        # A---*
+#        # |   |
+#        # | C-+-*
+#        # | | | |
+#        # *-+-B |
+#        #   |   |
+#        #   *---D
+#        #
+#
+#        # Should return:
+#
+#        # 
+#        # 
+#        #     A-*
+#        #     | |
+#        #   C---B
+#        #   |   |
+#        #   *---D
+#        #
+#
+#
+#        box1 = e.Box(e.Point(0,0,0), e.Point(0,4,4))
+#        box2 = e.Box(e.Point(0,2,2), e.Point(0,6,6))
+#        orig = e.CompoundBox(box1)
+#
+#        resultbox1 = e.Box(e.Point(0,4,2), e.Point(0,6,4))
+#        resultbox2 = e.Box(e.Point(0,2,4), e.Point(0,6,6))
+#        intended_result = [resultbox1, resultbox2]
+#
+#        result = orig._non_overlapping_peices_(box2)
+#
+#        assert result == intended_result
+#
+#
+    def test_compound_box_overlapping_2_corners(self):
+        # two corner overlapping boxes:
+
+        # A-------*
+        # |       |
+        # | C---* |
+        # | |   | |
+        # *-+---+-B
+        #   |   |
+        #   *---D
+        #
+
+        # Should return:
+
+        # 
+        # 
+        #        
+        #        
+        #   A---*
+        #   |   |
+        #   *---B
+        #
+
+        box1 = e.Box(e.Point(0,0,0), e.Point(0,8,4))
+        box2 = e.Box(e.Point(0,2,2), e.Point(0,6,6))
+        orig = e.CompoundBox(box1)
+
+        resultbox = e.Box(e.Point(0,2,4), e.Point(0,6,6))
+        intended_result = [resultbox]
+
+        result = orig._non_overlapping_peices_(box2)
+
+        assert result == intended_result
+#
+#
+#    def test_compound_box_overlapping_3_corners(self):
+#        # two corner overlapping boxes:
+#
+#        # A---------*
+#        # |   E---* |
+#        # | C-+-* | |
+#        # | | | | | |
+#        # *-+-+-+-+-B
+#        #   | | | |
+#        #   | *-+-F
+#        #   |   |
+#        #   *---D
+#
+#        # Should return:
+#
+#        #            
+#        #            
+#        #            
+#        #            
+#        #       A-*  
+#        #       | |
+#        #       +-B
+#        #        
+#
+#        box1 = e.Box(e.Point(0,0,0), e.Point(0,10,4))
+#        box2 = e.Box(e.Point(0,2,2), e.Point(0,6,8))
+#        box3 = e.Box(e.Point(0,4,1), e.Point(0,8,6))
+#        orig = e.CompoundBox([box1, box2])
+#
+#        resultbox = e.Box(e.Point(0,6,4), e.Point(0,8,6))
+#        intended_result = [resultbox]
+#
+#        result = orig._non_overlapping_peices_(box3)
+#
+#        assert result == intended_result
+#
+#    def test_compound_box_overlapping_4_corners(self):
+#        # two corner overlapping boxes:
+#
+#        # A---------*
+#        # | C--*    |
+#        # | |  |    |
+#        # | *--D    |
+#        # *---------B
+#        #
+#
+#        # Should return:
+#
+#        #            
+#
+#        box1 = e.Box(e.Point(0,0,0), e.Point(0,10,4))
+#        box2 = e.Box(e.Point(0,2,2), e.Point(0,4,4))
+#        orig = e.CompoundBox(box1)
+#
+#        intended_result = None
+#
+#        result = orig._non_overlapping_peices_(box2)
+#
+#        assert result == intended_result
+		
 	
