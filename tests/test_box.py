@@ -8,10 +8,10 @@ from time import sleep
 # | A |     7-+
 # |   |     |D|  9---+
 # |   |     | |  |E  |
-# |   3-----+-8  |   |
-# |   | B   |    +---0
-# +---2   5-|--+
-#     |   | |C |
+# |   3-----+-8  | +-|-+
+# |   | B   |    +---0 |
+# +---2   5-|--+   | F |
+#     |   | |C |   +---+
 #     |   +-|--6
 #     +-----4
 
@@ -33,6 +33,11 @@ class TestBox(unittest.TestCase):
         self.C = e.Box(e.Point(0,9,7),e.Point(0,14,9))
         self.D = e.Box(e.Point(0,11,2),e.Point(0,13,4))
         self.E = e.Box(e.Point(0,16,3),e.Point(0,20,6))
+        self.F = e.Box(e.Point(0,18,5),e.Point(0,22,8))
+        self.G = e.Box(e.Point(0,0,0), e.Point(0,8,4))
+        self.H = e.Box(e.Point(0,2,2), e.Point(0,6,6))
+        self.I = e.Box(e.Point(0,3,1), e.Point(0,4,8))
+
 	
 
     def test_box_error_handling(self):
@@ -54,6 +59,12 @@ class TestBox(unittest.TestCase):
         assert not self.B.is_overlapping(self.E)
         assert not self.D.is_overlapping(self.C)
         assert not self.D.is_overlapping(self.E)
+        assert self.E.is_overlapping(self.F)
+        assert self.F.is_overlapping(self.E)
+        assert self.G.is_overlapping(self.H)
+        assert self.H.is_overlapping(self.G)
+        assert self.H.is_overlapping(self.I)
+        assert self.I.is_overlapping(self.H)
 
 
 	
