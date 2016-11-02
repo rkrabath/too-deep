@@ -6,6 +6,8 @@ import pygame
 from pygame.locals import *
 
 class Point(object):
+    global DEBUG
+    DEBUG = False
     def __init__(self,z,x,y):
         if z < 0 or x < 0 or y < 0:
             raise ValueError("Values less than 0 are not allowed")
@@ -68,6 +70,7 @@ class Point(object):
         if box.left_edge < self.x < box.right_edge:
             # print "Checking if {0} is between {1} and {2}".format(self.y, box.top_edge, box.bottom_edge)
             if box.top_edge < self.y < box.bottom_edge:
+                if DEBUG: print "{0} is inside {1}".format(self, box)
                 # print "it is!"
                 return True
         # print "it's not!"
