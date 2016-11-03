@@ -144,7 +144,7 @@ class TestCompoundBox(unittest.TestCase):
 
         #            
 
-        box1 = e.Box(e.Point(0,0,0), e.Point(0,10,4))
+        box1 = e.Box(e.Point(0,0,0), e.Point(0,10,5))
         box2 = e.Box(e.Point(0,2,2), e.Point(0,4,4))
         orig = e.CompoundBox(box1)
 

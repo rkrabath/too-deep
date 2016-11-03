@@ -65,7 +65,7 @@ class CompoundBox(object):
 
     def _non_overlapping_peices_(self, candidate_box, iteration=0):
         """ Takes a box and returns a list of sub-boxes that don't overlap self"""
-        if iteration > 2:
+        if iteration > 10:
             raise SystemError('More than 10 iterations while trying to find non-overlapping boxes')
 
         if not self.overlaps_box(candidate_box):
