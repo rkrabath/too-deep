@@ -6,6 +6,10 @@ class CompoundBox(object):
     DEBUG = False
 
     def __init__(self, potentially_many_boxes):
+        if not potentially_many_boxes:
+            self.original_boxes = None
+            self.component_boxes = []
+            return
 
         if type(potentially_many_boxes) != type([]):
             boxes = [potentially_many_boxes]
@@ -29,6 +33,9 @@ class CompoundBox(object):
 
 
     def add_box(self, new_box):
+        if not self.component_boxes:
+            self.component_boxes = [new_box]
+            return
 
         for old_box in self.component_boxes:
             if new_box.adjecent_to(old_box):
@@ -38,11 +45,13 @@ class CompoundBox(object):
                 new_parts = self._non_overlapping_peices_(new_box)
                 self.component_boxes.extend(new_parts)
 
+
     def __add__(self, other):
         for box in other.component_boxes:
             new_peices = self._non_overlapping_peices_(box)
             self.component_boxes.extend(new_peices)
         #raise NotImplementedError("CompoundBox.__add__")
+
 
     def __sub__(self, other):
         remaining_peices = []
@@ -51,6 +60,7 @@ class CompoundBox(object):
             remaining_peices.extend(other._non_overlapping_peices_(component_box))
         return CompoundBox(remaining_peices)
         #raise NotImplementedError("CompoundBox.__sub__")
+
 
     def __repr__(self):
         return str(self.component_boxes)

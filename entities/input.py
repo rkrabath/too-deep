@@ -7,6 +7,7 @@ import pygame
 from pygame.locals import *
 
 import map as game_map
+from compoundbox import CompoundBox
 
 
 class Mode(object):
@@ -32,7 +33,7 @@ class Input(object):
         self.dispatch = dispatch
         self.cursor = [5,5]
         self.selected = None
-        self.selections = []
+        self.selections = CompoundBox(None)
         self.shift_down = False
         self.ctrl_down = False
         self.alt_down = False
@@ -195,7 +196,7 @@ class Input(object):
         if self.selected:
             end_point = copy.copy(self.cursor)
             normalized = self.normalize_box((self.selected, end_point))
-            self.selections.append(normalized)
+            self.selections.add_box(normalized)
             self.display.highlight_selecting(None)
             self.display.highlight_selections(self.selections)
             self.selected = None

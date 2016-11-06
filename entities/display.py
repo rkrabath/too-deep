@@ -90,11 +90,9 @@ class Display(object):
         self.highlighted_coordinate = xy
 
     def highlight_selecting(self, selections):
-        print selections
         self.highlighted_selecting = selections
 
     def highlight_selections(self, selections):
-        print selections
         self.highlighted_selections = selections
 
 
@@ -116,7 +114,7 @@ class Display(object):
                 s.fill(self.RED)
                 self.DISPLAYSURF.blit(s, start_point)
         if self.highlighted_selections:
-            for selection in self.highlighted_selections:
+            for selection in self.highlighted_selections.component_boxes:
                 start_point = self.top_left_pixel(selection[0])
                 end_point = self.bottom_right_pixel(selection[1])
                 width = end_point[0] - start_point[0]
