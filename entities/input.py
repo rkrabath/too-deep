@@ -8,6 +8,8 @@ from pygame.locals import *
 
 import map as game_map
 from compoundbox import CompoundBox
+from box import Box
+from point import Point
 
 
 class Mode(object):
@@ -196,7 +198,9 @@ class Input(object):
         if self.selected:
             end_point = copy.copy(self.cursor)
             normalized = self.normalize_box((self.selected, end_point))
-            self.selections.add_box(normalized)
+            top_left = Point(0, normalized[0][0], normalized[0][1])
+            bottom_right = Point(0, normalized[1][0], normalized[1][1])
+            self.selections.add_box(Box(top_left, bottom_right))
             self.display.highlight_selecting(None)
             self.display.highlight_selections(self.selections)
             self.selected = None

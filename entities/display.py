@@ -115,8 +115,8 @@ class Display(object):
                 self.DISPLAYSURF.blit(s, start_point)
         if self.highlighted_selections:
             for selection in self.highlighted_selections.component_boxes:
-                start_point = self.top_left_pixel(selection[0])
-                end_point = self.bottom_right_pixel(selection[1])
+                start_point = self.top_left_pixel(selection.top_left.xy())
+                end_point = self.bottom_right_pixel(selection.bottom_right.xy())
                 width = end_point[0] - start_point[0]
                 height = end_point[1] - start_point[1]
                 #print "Drawing box from {0} to {1}".format(str(start_point), str(end_point))
