@@ -71,7 +71,8 @@ class Point(object):
             if DEBUG: print "Checking if {0} is between {1} and {2}".format(self.y, box.top_edge, box.bottom_edge)
             if box.top_edge < self.y < box.bottom_edge:
                 if DEBUG: print "{0} is inside {1}".format(self, box)
-                # print "it is!"
                 return True
-        # print "it's not!"
+
+        if DEBUG: print "{0} is not inside {1}".format(self, box)
         return False
+
