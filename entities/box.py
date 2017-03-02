@@ -186,27 +186,27 @@ class Box(object):
         if self.top_edge < other.top_edge < other.bottom_edge < self.bottom_edge:
             if self.left_edge < other.left_edge < self.right_edge < other.right_edge:
                 boxes = self._cut_out_middle(other.top_edge, other.bottom_edge, 'y')
-                point_a = Point(self.left_edge, other.top_edge)
-                point_b = Point(other.left_edge, other.bottom_edge)
+                point_a = Point(0,self.left_edge, other.top_edge)
+                point_b = Point(0,other.left_edge, other.bottom_edge)
                 boxes.append(Box(point_a, point_b))
                 return boxes
             if other.left_edge < self.left_edge < other.right_edge < self.right_edge:
                 boxes = self._cut_out_middle(other.top_edge, other.bottom_edge, 'y')
-                point_a = Point(other.left_edge, other.top_edge)
-                point_b = Point(self.right_edge, other.bottom_edge)
+                point_a = Point(0,other.left_edge, other.top_edge)
+                point_b = Point(0,self.right_edge, other.bottom_edge)
                 boxes.append(Box(point_a, point_b))
                 return boxes
         if self.left_edge < other.left_edge < other.right_edge < self.right_edge:
             if self.top_edge < other.top_edge < self.bottom_edge < other.bottom_edge:
                 boxes = self._cut_out_middle(other.left_edge, other.right_edge, 'x')
-                point_a = Point(other.left_edge, self.top_edge)
-                point_b = Point(other.right_edge, self.top_edge)
+                point_a = Point(0,other.left_edge, self.top_edge)
+                point_b = Point(0,other.right_edge, self.top_edge)
                 boxes.append(Box(point_a, point_b))
                 return boxes
             if other.top_edge < self.top_edge < other.bottom_edge < self.bottom_edge:
                 boxes = self._cut_out_middle(other.left_edge, other.right_edge, 'x')
-                point_a = Point(other.left_edge, other.bottom_edge)
-                point_b = Point(other.right_edge, self.bottom_edge)
+                point_a = Point(0,other.left_edge, other.bottom_edge)
+                point_b = Point(0,other.right_edge, self.bottom_edge)
                 boxes.append(Box(point_a, point_b))
                 return boxes
 
@@ -221,9 +221,9 @@ class Box(object):
         if self.top_edge < other.top_edge < self.bottom_edge < other.bottom_edge:
             if self.left_edge < other.left_edge < self.right_edge < other.right_edge:
                 box_1_a = self.top_left
-                box_1_b = Point(other.left_edge, self.bottom_edge)
-                box_2_a = Point(other.left_edge, self.top_edge)
-                box_2_b = Point(self.right_edge, other.top_edge)
+                box_1_b = Point(0,other.left_edge, self.bottom_edge)
+                box_2_a = Point(0,other.left_edge, self.top_edge)
+                box_2_b = Point(0,self.right_edge, other.top_edge)
                 box1 = Box(box_1_a, box_1_b)
                 box2 = Box(box_2_a, box_2_b)
                 return [box1, box2]
@@ -245,9 +245,9 @@ class Box(object):
                 box2 = Box(box_2_a, box_2_b)
                 return [box1, box2]
             if other.left_edge < self.left_edge < other.right_edge < self.right_edge:
-                box_1_a = Point(self.left_edge, other.bottom_edge)
-                box_1_b = Point(other.right_edge, self.bottom_edge)
-                box_2_a = Point(other.right_edge, self.tom_edge)
+                box_1_a = Point(0,self.left_edge, other.bottom_edge)
+                box_1_b = Point(0,other.right_edge, self.bottom_edge)
+                box_2_a = Point(0,other.right_edge, self.tom_edge)
                 box_2_b = self.bottom_right
                 box1 = Box(box_1_a, box_1_b)
                 box2 = Box(box_2_a, box_2_b)
@@ -255,38 +255,57 @@ class Box(object):
 
 
         # Completely inside:
-        # A------*
-        # | C-*  |
-        # | | |  |
-        # | *-D  |
-        # *------B
+        # A------*  C------*
+        # | C-*  |  | A-*  |
+        # | | |  |  | | |  |
+        # | *-D  |  | *-B  |
+        # *------B  *------D
         if self.top_edge < other.top_edge < other.bottom_edge < self.bottom_edge:
             if self.left_edge < other.left_edge < other.right_edge < self.right_edge:
+                # cut a hole.  return 4 boxes.
+                point_a_1 = self.top_left
+                point_b_1 = Point(0,self.right_edge, other.top_edge)
+                point_a_2 = Point(0,self.left_edge, other.top_edge)
+                point_b_2 = other.bottom_left
+                point_a_3 = other.top_right
+                point_b_3 = Point(0,self.right_edge, other.bottom_edge)
+                point_a_4 = Point(0,self.left_edge, other.bottom_edge)
+                point_b_4 = self.bottom_right
+                return [
+                    Box(point_a_1, point_b_1),
+                    Box(point_a_2, point_b_2),
+                    Box(point_a_3, point_b_3),
+                    Box(point_a_4, point_b_4)
+                    ]
+
+
+        if other.top_edge < self.top_edge < self.bottom_edge < other.bottom_edge:
+            if other.left_edge < self.left_edge < self.right_edge < other.right_edge:
                 return None
 
 
 
-    def self._cut_out_middle(first_border, second_border, axis):
+    def _cut_out_middle(first_border, second_border, axis):
         """ If axis is 'x', resultant boxes will be "next to" eachother.  If 
         it's 'y', they will be "on top" of each other"""
         chunks = []
 
         if axis == 'x':
-            1_point_b_x = first_border
-            1_point_b_y = self.bottom_edge
-            2_point_a_x = second_border
-            2_point_a_y = self.top_edge
+            one_point_b_x = first_border
+            one_point_b_y = self.bottom_edge
+            two_point_a_x = second_border
+            two_point_a_y = self.top_edge
         else:
-            1_point_b_x = self.left_edge
-            1_point_b_y = first_border
-            2_point_a_x = self.left_edge
-            2_point_a_y = second_border
-        1_point_a = self.top_left
-        1_point_b = Point(1_point_b_x, 1_point_b_y)
-        2_point_b = Point(2_point_b_x, 2_point_b_y)
-        2_point_b = self.bottom_right
+            one_point_b_x = self.left_edge
+            one_point_b_y = first_border
+            two_point_a_x = self.left_edge
+            two_point_a_y = second_border
+        one_point_a = self.top_left
+        one_point_b = Point(0, one_point_b_x, one_point_b_y)
+        two_point_b = Point(0, two_point_b_x, two_point_b_y)
+        two_point_b = self.bottom_right
 
-        chunks.append(Box(1_point_a, 1_point_b))
-        chunks.append(Box(2_point_a, 2_point_b))
+        chunks.append(Box(one_point_a, one_point_b))
+        chunks.append(Box(two_point_a, two_point_b))
 
         return chunks
