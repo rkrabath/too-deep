@@ -145,11 +145,11 @@ class Box(object):
 
         if self.left_edge < other.left_edge < other.right_edge < self.right_edge:
             if other.top_edge < self.top_edge < self.bottom_edge < other.bottom_edge:
-                return self._cut_out_middle(other.left_edge, other.right_edge, axis='x')
+                return self._cut_out_middle(other.left_edge, other.right_edge, 'x')
 
         if self.top_edge < other.top_edge < other.bottom_edge < self.bottom_edge:
             if other.left_edge < self.left_edge < self.right_edge < other.right_edge:
-                return self._cut_out_middle(other.left_edge, other.right_edge, axis='y')
+                return self._cut_out_middle(other.top_edge, other.bottom_edge, 'y')
 
 
         # Still overlapping:
@@ -192,7 +192,7 @@ class Box(object):
                 return boxes
             if other.left_edge < self.left_edge < other.right_edge < self.right_edge:
                 boxes = self._cut_out_middle(other.top_edge, other.bottom_edge, 'y')
-                point_a = Point(0,other.left_edge, other.top_edge)
+                point_a = Point(0,other.right_edge, other.top_edge)
                 point_b = Point(0,self.right_edge, other.bottom_edge)
                 boxes.append(Box(point_a, point_b))
                 return boxes
@@ -200,7 +200,7 @@ class Box(object):
             if self.top_edge < other.top_edge < self.bottom_edge < other.bottom_edge:
                 boxes = self._cut_out_middle(other.left_edge, other.right_edge, 'x')
                 point_a = Point(0,other.left_edge, self.top_edge)
-                point_b = Point(0,other.right_edge, self.top_edge)
+                point_b = Point(0,other.right_edge, other.top_edge)
                 boxes.append(Box(point_a, point_b))
                 return boxes
             if other.top_edge < self.top_edge < other.bottom_edge < self.bottom_edge:
@@ -284,8 +284,11 @@ class Box(object):
                 return None
 
 
+        raise NotImplemented("Unhandled subtraction case:\n"+self+" - "+other)
 
-    def _cut_out_middle(first_border, second_border, axis):
+
+
+    def _cut_out_middle(self, first_border, second_border, axis):
         """ If axis is 'x', resultant boxes will be "next to" eachother.  If 
         it's 'y', they will be "on top" of each other"""
         chunks = []
@@ -296,13 +299,13 @@ class Box(object):
             two_point_a_x = second_border
             two_point_a_y = self.top_edge
         else:
-            one_point_b_x = self.left_edge
+            one_point_b_x = self.right_edge
             one_point_b_y = first_border
             two_point_a_x = self.left_edge
             two_point_a_y = second_border
         one_point_a = self.top_left
         one_point_b = Point(0, one_point_b_x, one_point_b_y)
-        two_point_b = Point(0, two_point_b_x, two_point_b_y)
+        two_point_a = Point(0, two_point_a_x, two_point_a_y)
         two_point_b = self.bottom_right
 
         chunks.append(Box(one_point_a, one_point_b))
