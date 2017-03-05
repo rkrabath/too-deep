@@ -26,6 +26,16 @@ from time import sleep
 # 9: (16,3)
 # 0: (20,6)
 
+
+# print
+# print "expected:"
+# print expected
+# print "got:"
+# print box1 - box2
+# print
+
+
+
 class TestBox(unittest.TestCase):
     def setUp(self):
         self.A = e.Box(e.Point(0,1,1),e.Point(0,5,7))
@@ -47,24 +57,56 @@ class TestBox(unittest.TestCase):
         self.assertRaises(ValueError, e.Box, (4,4,4), e.Point(0,4,4))
 
 
-    def test_adjacency(self):
-        assert self.A.adjecent_to(self.B)
-        assert not self.D.adjecent_to(self.E)
-        assert not self.B.adjecent_to(self.C)
+#    def test_adjacency(self):
+#        assert self.A.adjecent_to(self.B)
+#        assert not self.D.adjecent_to(self.E)
+#        assert not self.B.adjecent_to(self.C)
+#
+#    def test_overlapping(self):
+#        assert self.B.is_overlapping(self.C)
+#        assert not self.A.is_overlapping(self.B)
+#        assert not self.B.is_overlapping(self.D)
+#        assert not self.B.is_overlapping(self.E)
+#        assert not self.D.is_overlapping(self.C)
+#        assert not self.D.is_overlapping(self.E)
+#        assert self.E.is_overlapping(self.F)
+#        assert self.F.is_overlapping(self.E)
+#        assert self.G.is_overlapping(self.H)
+#        assert self.H.is_overlapping(self.G)
+#        assert self.H.is_overlapping(self.I)
+#        assert self.I.is_overlapping(self.H)
+#
 
-    def test_overlapping(self):
-        assert self.B.is_overlapping(self.C)
-        assert not self.A.is_overlapping(self.B)
-        assert not self.B.is_overlapping(self.D)
-        assert not self.B.is_overlapping(self.E)
-        assert not self.D.is_overlapping(self.C)
-        assert not self.D.is_overlapping(self.E)
-        assert self.E.is_overlapping(self.F)
-        assert self.F.is_overlapping(self.E)
-        assert self.G.is_overlapping(self.H)
-        assert self.H.is_overlapping(self.G)
-        assert self.H.is_overlapping(self.I)
-        assert self.I.is_overlapping(self.H)
+    def test_addition(self):
+
+        #   A-*
+        #   |S|
+        # C-+-+-----*
+        # | | | O   |
+        # *-+-+-----D
+        #   | |
+        #   | |
+        #   | |
+        #   | |
+        #   | |
+        #   *-B
+
+        pointA = e.Point(0,2,0)
+        pointB = e.Point(0,4,10)
+        pointC = e.Point(0,0,2)
+        pointD = e.Point(0,10,4)
+
+        box1 = e.Box(pointA, pointB)
+        box2 = e.Box(pointC, pointD)
+
+        expected = [
+                e.Box(e.Point(0,0,2), e.Point(0,2,4)),
+                e.Box(e.Point(0,4,2), e.Point(0,10,4)),
+                box1
+                ]
+
+
+        assert box1 + box2 == expected
 
 
     def test_subtraction_cross(self):	
@@ -102,12 +144,12 @@ class TestBox(unittest.TestCase):
 
     def test_subtraction_tee(self):	
         # Still overlapping:
-        # A--*      A---C---*--*
-        # |S |      | S |   |  |
-        # C--+-*    *---+---+--B
-        # |  |O|        |   |
-        # *--+-D        | O |
-        # |  |          *---D
+        # A--*    
+        # |S |    
+        # C--+-*  
+        # |  |O|  
+        # *--+-D  
+        # |  |    
         # *--B
         # Because even though C is not inside Box(A,B), C is on the opposite side of it than D
         pointA = e.Point(0,0,0)
@@ -125,10 +167,42 @@ class TestBox(unittest.TestCase):
 
         assert box1 - box2 == expected
 
+
+        #   A--*    
+        #   |S |    
+        # C-+--+  
+        # |O|  |  
+        # *-+--D  
+        #   |  |    
+        #   *--B
+        # Because even though C is not inside Box(A,B), C is on the opposite side of it than D
+        pointA = e.Point(0,2,0)
+        pointB = e.Point(0,4,10)
+        pointC = e.Point(0,0,2)
+        pointD = e.Point(0,4,4)
+
+        box1 = e.Box(pointA, pointB)
+        box2 = e.Box(pointC, pointD)
+
+        expected = [
+                e.Box(e.Point(0,2,0), e.Point(0,4,2)),
+                e.Box(e.Point(0,2,4), e.Point(0,4,10)),
+                ]
+
+        assert box1 - box2 == expected
+
+
+        #  A---C---*--*
+        #  | S |   |  |
+        #  *---+---+--B
+        #      |   |   
+        #      | O |   
+        #      *---D   `
+
         pointA = e.Point(0,0,0)
         pointB = e.Point(0,10,4)
         pointC = e.Point(0,2,0)
-        pointD = e.Point(0,4,10)
+        pointD = e.Point(0,4,6)
 
         box1 = e.Box(pointA, pointB)
         box2 = e.Box(pointC, pointD)
@@ -136,6 +210,30 @@ class TestBox(unittest.TestCase):
         expected = [
                 e.Box(e.Point(0,0,0), e.Point(0,2,4)),
                 e.Box(e.Point(0,4,0), e.Point(0,10,4)),
+                ]
+
+        
+        assert box1 - box2 == expected
+
+
+        #       C---*
+        #       | O |
+        #       |   |
+        #   A---+---+--*   
+        #   | S |   |  |   
+        #   *---*---D--B   `
+
+        pointA = e.Point(0,0,4)
+        pointB = e.Point(0,10,6)
+        pointC = e.Point(0,2,0)
+        pointD = e.Point(0,4,6)
+
+        box1 = e.Box(pointA, pointB)
+        box2 = e.Box(pointC, pointD)
+
+        expected = [
+                e.Box(e.Point(0,0,4), e.Point(0,2,6)),
+                e.Box(e.Point(0,4,4), e.Point(0,10,6)),
                 ]
 
         
@@ -216,12 +314,6 @@ class TestBox(unittest.TestCase):
                 e.Box(e.Point(0,2,0), e.Point(0,6,2)),
                 ]
 
-        print
-        print "expected:"
-        print expected
-        print "got:"
-        print box1-box2
-        print
         assert box1 - box2 == expected
 
         #         
@@ -252,13 +344,93 @@ class TestBox(unittest.TestCase):
 
     def test_subtraction_1_point(self):	
         # One point inside:
-        # A---*      A---*    C---*  C---*  
-        # |   |      |   |    |   |  |   |  
-        # | C-+-*  C-+-* |  A-+-* |  | A-+-*
-        # *-+-B |  | *-+-B  | *-+-D  *-+-D |
-        #   |   |  |   |    |   |      |   |
-        #   *---D  *---D    *---B      *---B
-        pass
+        # A---*   
+        # |   |   
+        # | C-+-* 
+        # *-+-B | 
+        #   |   | 
+        #   *---D 
+        pointA = e.Point(0,0,0)
+        pointB = e.Point(0,4,4)
+        pointC = e.Point(0,2,2)
+        pointD = e.Point(0,6,6)
+
+        box1 = e.Box(pointA, pointB)
+        box2 = e.Box(pointC, pointD)
+
+        expected = [
+                e.Box(e.Point(0,0,0), e.Point(0,2,4)),
+                e.Box(e.Point(0,2,0), e.Point(0,4,2)),
+                ]
+
+        #    A---* 
+        #    |   | 
+        #  C-+-* | 
+        #  | *-+-B 
+        #  |   |   
+        #  *---D   
+
+
+        pointA = e.Point(0,2,0)
+        pointB = e.Point(0,6,4)
+        pointC = e.Point(0,0,2)
+        pointD = e.Point(0,4,6)
+
+        box1 = e.Box(pointA, pointB)
+        box2 = e.Box(pointC, pointD)
+
+        expected = [
+                e.Box(e.Point(0,2,0), e.Point(0,4,2)),
+                e.Box(e.Point(0,4,0), e.Point(0,6,4)),
+                ]
+
+        assert box1 - box2 == expected
+
+
+        #    C---*
+        #    |   |
+        #  A-+-* |
+        #  | *-+-D
+        #  |   |  
+        #  *---B  
+
+        pointA = e.Point(0,0,2)
+        pointB = e.Point(0,4,6)
+        pointC = e.Point(0,2,0)
+        pointD = e.Point(0,6,4)
+
+        box1 = e.Box(pointA, pointB)
+        box2 = e.Box(pointC, pointD)
+
+        expected = [
+                e.Box(e.Point(0,0,2), e.Point(0,2,6)),
+                e.Box(e.Point(0,2,4), e.Point(0,4,6)),
+                ]
+
+        assert box1 - box2 == expected
+
+        #  C---*  
+        #  |   |  
+        #  | A-+-*
+        #  *-+-D |
+        #    |   |
+        #    *---B
+
+        pointA = e.Point(0,2,2)
+        pointB = e.Point(0,6,6)
+        pointC = e.Point(0,0,0)
+        pointD = e.Point(0,4,4)
+
+        box1 = e.Box(pointA, pointB)
+        box2 = e.Box(pointC, pointD)
+
+        expected = [
+                e.Box(e.Point(0,2,4), e.Point(0,4,6)),
+                e.Box(e.Point(0,4,2), e.Point(0,6,6)),
+                ]
+
+        assert box1 - box2 == expected
+
 
 
     def test_subtraction_inside(self):	

@@ -20,96 +20,96 @@ class Box(object):
         self.bottom_edge = self.bottom_right.y
 
 
-    def adjecent_to(self, other):
-        if self.left_edge == other.right_edge:
-            return True
-        if self.right_edge == other.left_edge:
-            return True
-        if self.top_edge == other.bottom_edge:
-            return True
-        if self.bottom_edge == other.top_edge:
-            return True
-
-        return False
-
-
-
-    def is_overlapping(self, other, reverse=True):
-        # If any of the points of other are inside self, then we're overlapping.
-        for candidate_corner in other.corners:
-            x, y = candidate_corner.xy()
-            if self.left_edge < x < self.right_edge:
-                if self.top_edge < y < self.bottom_edge:
-                    return True
-
-        # Sometimes the opposite might be true instead:
-        if reverse and other.is_overlapping(self, reverse=False):
-            return True
-
-        # Sometimes the boxes might cross but not actually have points inside each other
-        #
-        #     +--+
-        #     |O |
-        # +---|--|---+
-        # | S |  |   |
-        # +---|--|---+
-        #     |  |
-        #     +--+
-
-        if self.left_edge < other.right_edge < self.right_edge:
-            if other.top_edge < self.top_edge < other.bottom_edge:
-                return True
-
-        # Still overlapping:
-        # A--*
-        # |S |
-        # C--+-*
-        # |  |O|
-        # *--+-D
-        # |  |
-        # *--B
-        # Because even though C is not inside Box(A,B), C is on the opposite side of it than D
-        if self.left_edge == other.left_edge:
-            if other.right_edge > self.left_edge:
-                return True
-        if self.right_edge == other.right_edge:
-            if other.left_edge < self.right_edge:
-                return True
-        if self.top_edge == other.top_edge:
-            if other.bottom_edge > self.top_edge:
-                return True
-        if self.bottom_edge == other.bottom_edge:
-            if other.top_edge < self.bottom_edge:
-                return True
-               
-        return False
-
-
-    def corners_inside(self, other):
-        corners = []
-        for corner in self.corners:
-            if corner.inside(other):
-                corners.append(corner)
-
-        # The point might not be inside, instead just touching, but still the box is overlapping
-        if self.left_edge == other.left_edge:
-            if other.right_edge > self.left_edge:
-                corners.append(self.top_left)
-                corners.append(self.bottom_left)
-        if self.right_edge == other.right_edge:
-            if other.left_edge < self.right_edge:
-                corners.append(self.top_right)
-                corners.append(self.bottom_right)
-        if self.top_edge == other.top_edge:
-            if other.bottom_edge > self.top_edge:
-                corners.append(self.top_right)
-                corners.append(self.top_left)
-        if self.bottom_edge == other.bottom_edge:
-            if other.top_edge < self.bottom_edge:
-                corners.append(self.bottom_right)
-                corners.append(self.bottom_left)
-
-        return corners
+#    def adjecent_to(self, other):
+#        if self.left_edge == other.right_edge:
+#            return True
+#        if self.right_edge == other.left_edge:
+#            return True
+#        if self.top_edge == other.bottom_edge:
+#            return True
+#        if self.bottom_edge == other.top_edge:
+#            return True
+#
+#        return False
+#
+#
+#
+#    def is_overlapping(self, other, reverse=True):
+#        # If any of the points of other are inside self, then we're overlapping.
+#        for candidate_corner in other.corners:
+#            x, y = candidate_corner.xy()
+#            if self.left_edge < x < self.right_edge:
+#                if self.top_edge < y < self.bottom_edge:
+#                    return True
+#
+#        # Sometimes the opposite might be true instead:
+#        if reverse and other.is_overlapping(self, reverse=False):
+#            return True
+#
+#        # Sometimes the boxes might cross but not actually have points inside each other
+#        #
+#        #     +--+
+#        #     |O |
+#        # +---|--|---+
+#        # | S |  |   |
+#        # +---|--|---+
+#        #     |  |
+#        #     +--+
+#
+#        if self.left_edge < other.right_edge < self.right_edge:
+#            if other.top_edge < self.top_edge < other.bottom_edge:
+#                return True
+#
+#        # Still overlapping:
+#        # A--*
+#        # |S |
+#        # C--+-*
+#        # |  |O|
+#        # *--+-D
+#        # |  |
+#        # *--B
+#        # Because even though C is not inside Box(A,B), C is on the opposite side of it than D
+#        if self.left_edge == other.left_edge:
+#            if other.right_edge > self.left_edge:
+#                return True
+#        if self.right_edge == other.right_edge:
+#            if other.left_edge < self.right_edge:
+#                return True
+#        if self.top_edge == other.top_edge:
+#            if other.bottom_edge > self.top_edge:
+#                return True
+#        if self.bottom_edge == other.bottom_edge:
+#            if other.top_edge < self.bottom_edge:
+#                return True
+#               
+#        return False
+#
+#
+#    def corners_inside(self, other):
+#        corners = []
+#        for corner in self.corners:
+#            if corner.inside(other):
+#                corners.append(corner)
+#
+#        # The point might not be inside, instead just touching, but still the box is overlapping
+#        if self.left_edge == other.left_edge:
+#            if other.right_edge > self.left_edge:
+#                corners.append(self.top_left)
+#                corners.append(self.bottom_left)
+#        if self.right_edge == other.right_edge:
+#            if other.left_edge < self.right_edge:
+#                corners.append(self.top_right)
+#                corners.append(self.bottom_right)
+#        if self.top_edge == other.top_edge:
+#            if other.bottom_edge > self.top_edge:
+#                corners.append(self.top_right)
+#                corners.append(self.top_left)
+#        if self.bottom_edge == other.bottom_edge:
+#            if other.top_edge < self.bottom_edge:
+#                corners.append(self.bottom_right)
+#                corners.append(self.bottom_left)
+#
+#        return corners
 
     @property
     def corners(self):
@@ -130,6 +130,12 @@ class Box(object):
                 return True
         return False
 
+    
+    def __add__(self, other):
+        non_overlapping_boxes = other - self
+        non_overlapping_boxes.append(self)
+        return non_overlapping_boxes
+    
 
     def __sub__(self, other):
 
@@ -230,7 +236,7 @@ class Box(object):
             if other.left_edge < self.left_edge < other.right_edge < self.right_edge:
                 box_1_a = self.top_left
                 box_1_b = other.top_right
-                box_2_a = Point(other.right_edge, self.top_edge)
+                box_2_a = Point(0,other.right_edge, self.top_edge)
                 box_2_b = self.bottom_right
                 box1 = Box(box_1_a, box_1_b)
                 box2 = Box(box_2_a, box_2_b)
@@ -238,7 +244,7 @@ class Box(object):
         if other.top_edge < self.top_edge < other.bottom_edge < self.bottom_edge:
             if self.left_edge < other.left_edge < self.right_edge < other.right_edge:
                 box_1_a = self.top_left
-                box_1_b = Point(other.left_edge, self.bottom_edge)
+                box_1_b = Point(0,other.left_edge, self.bottom_edge)
                 box_2_a = other.bottom_left
                 box_2_b = self.bottom_right
                 box1 = Box(box_1_a, box_1_b)
@@ -247,7 +253,7 @@ class Box(object):
             if other.left_edge < self.left_edge < other.right_edge < self.right_edge:
                 box_1_a = Point(0,self.left_edge, other.bottom_edge)
                 box_1_b = Point(0,other.right_edge, self.bottom_edge)
-                box_2_a = Point(0,other.right_edge, self.tom_edge)
+                box_2_a = Point(0,other.right_edge, self.top_edge)
                 box_2_b = self.bottom_right
                 box1 = Box(box_1_a, box_1_b)
                 box2 = Box(box_2_a, box_2_b)
