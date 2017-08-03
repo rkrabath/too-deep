@@ -8,6 +8,9 @@ class Box(object):
         if type(bottom_right) != type(Point(0,0,0)):
             raise ValueError("Second parameter must be a Point")
 
+        if top_left == bottom_right:
+            raise ValueError("0 dimensional box is not allowed!")
+
         self.top_left = top_left
         self.bottom_right = bottom_right
 
