@@ -109,4 +109,14 @@ class TestInput(unittest.TestCase):
                 expected = e.Pointset([(0,5,6), (0,5,5), (0,6,6), (0,6,5)])
 
                 assert self.input.selections.points == expected.points
+
+        def test_normalize_box(self):
+                a = (1,1)
+                b = (1,4)
+                c = (4,1)
+                d = (4,4)
+
+                assert self.input.normalize_box((a,d)) == (a,d)
+                assert self.input.normalize_box((d,a)) == (a,d)
+                assert self.input.normalize_box((b,c)) == (a,d)
             

@@ -28,7 +28,7 @@ class Pointset(object):
             self.points = self.points - other.points
             return self
         if type(other) is Point:
-            self.discard(other)
+            self.points.discard(other)
             return self
         raise TypeError("Can't remove "+type(other)+" from Pointset")
          
