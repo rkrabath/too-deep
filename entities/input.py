@@ -7,9 +7,8 @@ import pygame
 from pygame.locals import *
 
 import map as game_map
-from compoundbox import CompoundBox
-from box import Box
 from point import Point
+from pointset import Pointset
 
 
 class Mode(object):
@@ -35,7 +34,7 @@ class Input(object):
         self.dispatch = dispatch
         self.cursor = [5,5]
         self.selected = None
-        self.selections = CompoundBox(None)
+        self.selections = Pointset()
         self.shift_down = False
         self.ctrl_down = False
         self.alt_down = False
@@ -88,12 +87,14 @@ class Input(object):
                 try:
                     self.down_options[event.key]()
                 except KeyError:
-                    print "Key pressed with no action defined: ", event
+                    #print "Key pressed with no action defined: ", event
+                    pass
             elif event.type == KEYUP:
                 try:
                     self.up_options[event.key]()
                 except KeyError:
-                    print "Key released with no action defined: ", event
+                    #print "Key released with no action defined: ", event
+                    pass
             elif event.type == MOUSEMOTION:
                 node = self.display.get_coord(event.pos)
                 self.display.highlight_node(node.xy())
@@ -108,6 +109,69 @@ class Input(object):
                     self.dispatch.create_agent_at(node)
             else:
                 print "Unrecongized entry: ", event.type
+
+    
+    def shift_pressed(self):
+        self.shift_down = True
+
+    def shift_released(self):
+        self.shift_down = False
+
+    def ctrl_pressed(self):
+        self.ctrl_down = True
+
+    def ctrl_released(self):
+        self.ctrl_down = False
+
+    def alt_pressed(self):
+        self.alt_down = True
+
+    def alt_released(self):
+        self.alt_down = False
+
+    def up(self):
+        self.cursor[1] -= 1    
+        self.update_selection()
+
+    def down(self):
+        self.cursor[1] += 1    
+        self.update_selection()
+
+    def left(self):
+        self.cursor[0] -= 1    
+        self.update_selection()
+
+    def right(self):
+        self.cursor[0] += 1    
+        self.update_selection()
+
+    def update_selection(self):
+        self.display.highlight_node(self.cursor)
+        if self.selected:
+            end_point = copy.copy(self.cursor)
+            normalized = self.normalize_box((self.selected, end_point))
+            self.display.highlight_selecting(normalized)
+     
+    def select(self):
+        if self.selected:
+            end_point = copy.copy(self.cursor)
+            a,b = self.normalize_box((self.selected, end_point))
+            all_points = self.points_in_box(a,b)
+            self.selections = self.selections + all_points
+            self.display.highlight_selecting(None)
+            self.display.highlight_selections(self.selections)
+            self.selected = None
+        else:
+            self.selected = copy.copy(self.cursor)
+
+    def points_in_box(self, point_a, point_b):
+        """ Return a set of points that are in a rectangle defined by a and b """
+        points = []
+        for x in xrange(point_a[0], point_b[0]):
+            for y in xrange(point_a[1], point_b[1]):
+                points.append(Point(0,x,y))
+        pointss = Pointset(points)
+        return pointss
 
     def normalize_box(self, box):
         """ Given a set of coordinates ((x,y),(x,y)), return the top left and bottom right points """
@@ -151,63 +215,6 @@ class Input(object):
         d = (b[0],a[1])
         return self.normalize_box((c,d)) # We computed new corners, 
         #then we call back to make sure they're in the right order.
-    
-    def shift_pressed(self):
-        self.shift_down = True
-
-    def shift_released(self):
-        self.shift_down = False
-
-    def ctrl_pressed(self):
-        self.ctrl_down = True
-
-    def ctrl_released(self):
-        self.ctrl_down = False
-
-    def alt_pressed(self):
-        self.alt_down = True
-
-    def alt_released(self):
-        self.alt_down = False
-
-    def up(self):
-        self.cursor[1] -= 1    
-        self.update_selection()
-
-    def down(self):
-        self.cursor[1] += 1    
-        self.update_selection()
-
-    def left(self):
-        self.cursor[0] -= 1    
-        self.update_selection()
-
-    def right(self):
-        self.cursor[0] += 1    
-        self.update_selection()
-
-    def update_selection(self):
-        self.display.highlight_node(self.cursor)
-        if self.selected:
-            end_point = copy.copy(self.cursor)
-            normalized = self.normalize_box((self.selected, end_point))
-            self.display.highlight_selecting(normalized)
-     
-
-    def select(self):
-        if self.selected:
-            end_point = copy.copy(self.cursor)
-            normalized = self.normalize_box((self.selected, end_point))
-            top_left = Point(0, normalized[0][0], normalized[0][1])
-            bottom_right = Point(0, normalized[1][0], normalized[1][1])
-            self.selections.add_box(Box(top_left, bottom_right))
-            self.display.highlight_selecting(None)
-            self.display.highlight_selections(self.selections)
-            self.selected = None
-        else:
-            self.selected = copy.copy(self.cursor)
-
-
 
 
 

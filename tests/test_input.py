@@ -71,3 +71,42 @@ class TestInput(unittest.TestCase):
 	def test_exiting(self):
                 pygame.event.post(pygame.event.Event(QUIT))
 		self.assertRaises(SystemExit, self.input.process)
+
+
+        def test_box_selection(self):
+                pygame.event.post(pygame.event.Event(KEYDOWN, {
+                            'unicode': ' ',
+                            'key': 32,
+                            'mod': '',
+                            }))
+                pygame.event.post(pygame.event.Event(KEYDOWN, {
+                            'unicode': '',
+                            'key': 274,
+                            'mod': '',
+                            }))
+                pygame.event.post(pygame.event.Event(KEYDOWN, {
+                            'unicode': '',
+                            'key': 274,
+                            'mod': '',
+                            }))
+                pygame.event.post(pygame.event.Event(KEYDOWN, {
+                            'unicode': '',
+                            'key': 275,
+                            'mod': '',
+                            }))
+                pygame.event.post(pygame.event.Event(KEYDOWN, {
+                            'unicode': '',
+                            'key': 275,
+                            'mod': '',
+                            }))
+                pygame.event.post(pygame.event.Event(KEYDOWN, {
+                            'unicode': ' ',
+                            'key': 32,
+                            'mod': '',
+                            }))
+		self.input.process()
+
+                expected = e.Pointset([(0,5,6), (0,5,5), (0,6,6), (0,6,5)])
+
+                assert self.input.selections.points == expected.points
+            
