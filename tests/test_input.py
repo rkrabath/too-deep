@@ -106,7 +106,7 @@ class TestInput(unittest.TestCase):
                             }))
 		self.input.process()
 
-                expected = e.Pointset([(0,5,6), (0,5,5), (0,6,6), (0,6,5)])
+                expected = e.Pointset([(0,5,5), (0,5,6), (0,5,7), (0,6,5), (0,6,6), (0,6,7), (0,7,5), (0,7,6), (0,7,7)])
 
                 assert self.input.selections.points == expected.points
 

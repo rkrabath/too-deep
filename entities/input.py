@@ -167,8 +167,8 @@ class Input(object):
     def points_in_box(self, point_a, point_b):
         """ Return a set of points that are in a rectangle defined by a and b """
         points = []
-        for x in xrange(point_a[0], point_b[0]):
-            for y in xrange(point_a[1], point_b[1]):
+        for x in xrange(point_a[0], point_b[0]+1):
+            for y in xrange(point_a[1], point_b[1]+1):
                 points.append(Point(0,x,y))
         pointss = Pointset(points)
         return pointss
