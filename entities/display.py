@@ -22,6 +22,8 @@ class Display(object):
         self.map = map_object
         self.layer = self.map.layer_max
         self.highlighted_coordinate = None
+        self.highlighted_selections = None
+        self.highlighted_selecting = None
     
         dimension = self.scale * self.map.layer_max + 2
         self.DISPLAYSURF = pygame.display.set_mode((dimension, dimension), pygame.SRCALPHA, 32)
@@ -87,14 +89,41 @@ class Display(object):
     def highlight_node(self, xy):
         self.highlighted_coordinate = xy
 
+    def highlight_selecting(self, selections):
+        self.highlighted_selecting = selections
+
+    def highlight_selections(self, selections):
+        self.highlighted_selections = selections
+
 
     def show_highlight(self):
         if self.highlighted_coordinate:
             display_point = [(x*self.scale-self.scale/2) for x in self.highlighted_coordinate]
+            #print "Cursor highlight at {0}".format(str(display_point))
             s = pygame.Surface((self.scale,self.scale))
             s.set_alpha(128)
             s.fill(self.RED)
             self.DISPLAYSURF.blit(s, display_point)
+        if self.highlighted_selecting:
+                start_point = self.top_left_pixel(self.highlighted_selecting[0])
+                end_point = self.bottom_right_pixel(self.highlighted_selecting[1])
+                width = end_point[0] - start_point[0]
+                height = end_point[1] - start_point[1]
+                s = pygame.Surface((width,height))
+                s.set_alpha(64)
+                s.fill(self.RED)
+                self.DISPLAYSURF.blit(s, start_point)
+        if self.highlighted_selections:
+            for coord in self.highlighted_selections.points:
+                start_point = self.top_left_pixel(coord.xy())
+                end_point = self.bottom_right_pixel(coord.xy())
+                width = end_point[0] - start_point[0]
+                height = end_point[1] - start_point[1]
+                #print "Drawing box from {0} to {1}".format(str(start_point), str(end_point))
+                s = pygame.Surface((width,height))
+                s.set_alpha(96)
+                s.fill(self.RED)
+                self.DISPLAYSURF.blit(s, start_point)
 
 
     def update(self, agents, items):
@@ -156,3 +185,19 @@ class Display(object):
     
         pygame.display.update()
 
+    def top_left_pixel(self, graph_xy):
+        x, y = graph_xy
+        midpoint = self.scale/2
+        pixel_x = (x * self.scale) - midpoint
+        pixel_y = (y * self.scale) - midpoint
+        pixel_xy = (pixel_x, pixel_y)
+        return pixel_xy
+    
+    def bottom_right_pixel(self, graph_xy):
+        x, y = graph_xy
+        midpoint = self.scale/2
+        pixel_x = (x * self.scale) + midpoint
+        pixel_y = (y * self.scale) + midpoint
+        pixel_xy = (pixel_x, pixel_y)
+        return pixel_xy
+        

@@ -71,3 +71,52 @@ class TestInput(unittest.TestCase):
 	def test_exiting(self):
                 pygame.event.post(pygame.event.Event(QUIT))
 		self.assertRaises(SystemExit, self.input.process)
+
+
+        def test_box_selection(self):
+                pygame.event.post(pygame.event.Event(KEYDOWN, {
+                            'unicode': ' ',
+                            'key': 32,
+                            'mod': '',
+                            }))
+                pygame.event.post(pygame.event.Event(KEYDOWN, {
+                            'unicode': '',
+                            'key': 274,
+                            'mod': '',
+                            }))
+                pygame.event.post(pygame.event.Event(KEYDOWN, {
+                            'unicode': '',
+                            'key': 274,
+                            'mod': '',
+                            }))
+                pygame.event.post(pygame.event.Event(KEYDOWN, {
+                            'unicode': '',
+                            'key': 275,
+                            'mod': '',
+                            }))
+                pygame.event.post(pygame.event.Event(KEYDOWN, {
+                            'unicode': '',
+                            'key': 275,
+                            'mod': '',
+                            }))
+                pygame.event.post(pygame.event.Event(KEYDOWN, {
+                            'unicode': ' ',
+                            'key': 32,
+                            'mod': '',
+                            }))
+		self.input.process()
+
+                expected = e.Pointset([(0,5,5), (0,5,6), (0,5,7), (0,6,5), (0,6,6), (0,6,7), (0,7,5), (0,7,6), (0,7,7)])
+
+                assert self.input.selections.points == expected.points
+
+        def test_normalize_box(self):
+                a = (1,1)
+                b = (1,4)
+                c = (4,1)
+                d = (4,4)
+
+                assert self.input.normalize_box((a,d)) == (a,d)
+                assert self.input.normalize_box((d,a)) == (a,d)
+                assert self.input.normalize_box((b,c)) == (a,d)
+            
