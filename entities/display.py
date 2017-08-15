@@ -3,10 +3,12 @@
 import sys
 import networkx as nx
 import pygame
+import math
 from pygame.locals import *
 
 from point import Point
 import map as map_object
+from hud import HUD
 
 class Display(object):
 
@@ -17,10 +19,12 @@ class Display(object):
         self.RED   = (255,   0,   0)
         self.GREEN = (  0, 255,   0)
         self.BLUE  = (  0,   0, 255)
+        self.SHADE = pygame.Color(0,0,0,128)
         pygame.init()
         self.scale = scale
         self.map = map_object
         self.layer = self.map.layer_max
+        self.hud = HUD()
         self.highlighted_coordinate = None
         self.highlighted_selections = None
         self.highlighted_selecting = None
@@ -125,6 +129,40 @@ class Display(object):
                 s.fill(self.RED)
                 self.DISPLAYSURF.blit(s, start_point)
 
+    
+    def show_hud(self):
+        message = self.hud.message
+        width = self.scale*20
+        height = self.scale*5
+        hud_canvas = pygame.Surface((width, height),pygame.SRCALPHA)
+
+        top_left_rect = pygame.Rect(0,0,self.scale,self.scale)
+        top_right_rect = pygame.Rect(width-self.scale,0,self.scale,self.scale)
+        bottom_left_rect = pygame.Rect(0,height-self.scale,self.scale,self.scale)
+        bottom_right_rect = pygame.Rect(width-self.scale,height-self.scale,self.scale,self.scale)
+
+        pygame.draw.arc(hud_canvas, self.SHADE, top_left_rect, math.pi/2, math.pi, self.scale/2)
+        pygame.draw.arc(hud_canvas, self.SHADE, top_right_rect, 0, math.pi/2, self.scale/2)
+        pygame.draw.arc(hud_canvas, self.SHADE, bottom_left_rect, math.pi, 3*math.pi/2 ,self.scale/2)
+        pygame.draw.arc(hud_canvas, self.SHADE, bottom_right_rect, 3*math.pi/2.0, 2*math.pi, self.scale/2)
+        pygame.draw.rect(hud_canvas, self.SHADE, (self.scale/2.0, 0, width-self.scale, height))
+        pygame.draw.rect(hud_canvas, self.SHADE, (0, self.scale/2.0, self.scale, height-self.scale))
+        pygame.draw.rect(hud_canvas, self.SHADE, (width-self.scale/2.0, self.scale/2.0, width, height-self.scale))
+
+
+
+        pygame.draw.arc(hud_canvas, self.BLACK, top_left_rect, math.pi/2.0, math.pi, 5)
+        pygame.draw.arc(hud_canvas, self.BLACK, top_right_rect, 0, math.pi/2.0, 5)
+        pygame.draw.arc(hud_canvas, self.BLACK, bottom_left_rect, math.pi, 3*math.pi/2.0 ,5)
+        pygame.draw.arc(hud_canvas, self.BLACK, bottom_right_rect, 3*math.pi/2.0, 2*math.pi, 5)
+
+        pygame.draw.line(hud_canvas, self.BLACK, (self.scale/2, 0), (width-self.scale/2,0), 5)
+        pygame.draw.line(hud_canvas, self.BLACK, (self.scale/2, height), (width-self.scale/2,height), 5)
+        pygame.draw.line(hud_canvas, self.BLACK, (0, self.scale/2), (0, height-self.scale/2), 5)
+        pygame.draw.line(hud_canvas, self.BLACK, (width, self.scale/2), (width,height-self.scale/2), 5)
+
+        self.DISPLAYSURF.blit(hud_canvas, Point(0,2,25).xy_display_offset(self.scale))
+
 
     def update(self, agents, items):
         # draw on the surface object
@@ -182,6 +220,8 @@ class Display(object):
         self.draw_agents(agents)
 
         self.show_highlight()
+
+        self.show_hud()
     
         pygame.display.update()
 
