@@ -96,15 +96,17 @@ class Input(object):
                     #print "Key released with no action defined: ", event
                     pass
             elif event.type == MOUSEMOTION:
-                node = self.display.get_coord(event.pos)
-                self.display.highlight_node(node.xy())
+                node = list(self.display.get_coord(event.pos).xy())
+                self.cursor = node
+                self.update_selection()
             elif event.type == MOUSEBUTTONDOWN:
                 node = self.display.get_coord(event.pos)
                 if event.button == 1:
-                    if game_map.is_traversable(node):
-                        game_map.make_not_traversable(node)
-                    else:
-                        game_map.make_traversable(node)
+                   # if game_map.is_traversable(node):
+                   #     game_map.make_not_traversable(node)
+                   # else:
+                   #     game_map.make_traversable(node)
+                    self.select()
                 elif event.button == 3:
                     self.dispatch.create_agent_at(node)
             else:
