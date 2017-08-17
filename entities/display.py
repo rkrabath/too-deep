@@ -98,6 +98,10 @@ class Display(object):
 
     def highlight_selections(self, selections):
         self.highlighted_selections = selections
+        if self.highlighted_selections:
+            self.hud.points_selected()
+        else:
+            self.hud.clear()
 
 
     def show_highlight(self):
