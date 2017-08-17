@@ -75,6 +75,9 @@ class HUD(object):
 
     def get_hud(self):
 
+        if not self.message:
+            return pygame.Surface((0,0))
+
         width = 0
         height = 0
         for line in self.message:
@@ -93,6 +96,7 @@ class HUD(object):
         y = 10
         for line in text:
             box.blit(line, (x,y))
+            y += line.get_height()
 
         return box
 

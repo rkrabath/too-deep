@@ -40,6 +40,14 @@ class Pointset(object):
     def __repr__(self):
         return str(self.points) 
 
+
+    def __bool__(self):
+        if len(self.points) == 0:
+            return False
+        return True
+    __nonzero__ = __bool__
+
+
     def coerce(self, possible_point):
         if type(possible_point) is Point:
             return possible_point

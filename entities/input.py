@@ -160,9 +160,9 @@ class Input(object):
             a,b = self.normalize_box((self.selected, end_point))
             all_points = self.points_in_box(a,b)
             self.selections = self.selections + all_points
-            self.display.highlight_selecting(None)
+            self.display.highlight_selecting(Pointset())
             self.display.highlight_selections(self.selections)
-            self.selected = None
+            self.selected = Pointset()
         else:
             self.selected = copy.copy(self.cursor)
 
