@@ -43,6 +43,8 @@ class Input(object):
                     32 : self.select, # ' '
                     44 : self.display.level_up, # '<'
                     46 : self.display.level_down, # '>'
+                    27 : self.clear,
+                   100 : self.ditch,
                    303 : self.shift_pressed,
                    304 : self.shift_pressed,
                    305 : self.ctrl_pressed,
@@ -147,6 +149,20 @@ class Input(object):
         self.cursor[0] += 1    
         self.update_selection()
 
+
+    def ditch(self):
+        if self.selections:
+            self.dispatch.orders['ditch'].extend(self.selections)
+            self.clear()
+
+
+    def clear(self):
+        self.selections = Pointset()
+        self.selected = Pointset()
+        self.display.highlight_selections(self.selections)
+        self.display.highlight_selecting(Pointset())
+
+
     def update_selection(self):
         self.display.highlight_node(self.cursor)
         if self.selected:
@@ -154,6 +170,7 @@ class Input(object):
             normalized = self.normalize_box((self.selected, end_point))
             self.display.highlight_selecting(normalized)
      
+
     def select(self):
         if self.selected:
             end_point = copy.copy(self.cursor)
@@ -166,14 +183,16 @@ class Input(object):
         else:
             self.selected = copy.copy(self.cursor)
 
+
     def points_in_box(self, point_a, point_b):
         """ Return a set of points that are in a rectangle defined by a and b """
         points = []
         for x in xrange(point_a[0], point_b[0]+1):
             for y in xrange(point_a[1], point_b[1]+1):
-                points.append(Point(0,x,y))
+                points.append(Point(self.display.layer,x,y))
         pointss = Pointset(points)
         return pointss
+
 
     def normalize_box(self, box):
         """ Given a set of coordinates ((x,y),(x,y)), return the top left and bottom right points """

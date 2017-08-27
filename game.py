@@ -16,7 +16,7 @@ scale = 32
 game_map = e.map
 game_map.init(32)
 dispatch = e.Dispatch()
-display = e.Display(scale)
+display = e.Display(scale, dispatch)
 input = e.Input(display, dispatch)
             
 print "================================="
