@@ -17,6 +17,12 @@ class Dispatch(object):
         self.agents = []
         self.state_manager = multiprocessing.Manager()
         self.items = self.state_manager.list()
+        self.orders = {
+            'ditch': [],
+            'stairs': [],
+            'tunnel': [],
+            'ramp': [],
+        }
 
 
     def update(self):
@@ -24,6 +30,11 @@ class Dispatch(object):
 
         for agent in self.agents:
             agent.tick()
+
+    def first_order(self):
+        for order, location_list in self.orders.iteritems():
+            if location_list:
+                return location_list.pop()
       
 
     def create_agent_at(self, location):
@@ -39,5 +50,3 @@ class Dispatch(object):
     def exit(self):
         for agent in self.agents:
             agent.exit()
-
-

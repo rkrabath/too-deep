@@ -12,7 +12,7 @@ from hud import HUD
 
 class Display(object):
 
-    def __init__(self, scale):
+    def __init__(self, scale, dispatch):
         # set up the colors
         self.BLACK = (  0,   0,   0)
         self.WHITE = (255, 255, 255)
@@ -20,8 +20,10 @@ class Display(object):
         self.GREEN = (  0, 255,   0)
         self.BLUE  = (  0,   0, 255)
         self.SHADE = pygame.Color(0,0,0,128)
+        self.SHADERED = pygame.Color(255,0,0,128)
         pygame.init()
         self.scale = scale
+        self.dispatch = dispatch
         self.map = map_object
         self.layer = self.map.layer_max
         self.hud = HUD()
@@ -93,8 +95,10 @@ class Display(object):
     def highlight_node(self, xy):
         self.highlighted_coordinate = xy
 
+
     def highlight_selecting(self, selections):
         self.highlighted_selecting = selections
+
 
     def highlight_selections(self, selections):
         self.highlighted_selections = selections
@@ -134,6 +138,19 @@ class Display(object):
                 self.DISPLAYSURF.blit(s, start_point)
 
     
+    def show_orders(self):
+        font = pygame.font.SysFont("fake", 28, True)
+        orders = self.dispatch.orders
+        for order in orders:
+            icon = pygame.Surface((self.scale, self.scale))
+            icon.set_alpha(128)
+            letter = font.render(order[0].upper(), True, self.RED)
+            pygame.draw.rect(icon, self.SHADE, (0,0,self.scale,self.scale))
+            icon.blit(letter, (0,0))
+
+            for point in orders[order]:
+                self.DISPLAYSURF.blit(icon, point.xy_display_offset(self.scale))
+
     def show_hud(self):
         self.DISPLAYSURF.blit(self.hud.get_hud(), Point(0,2,25).xy_display_offset(self.scale))
 
@@ -194,6 +211,8 @@ class Display(object):
         self.draw_agents(agents)
 
         self.show_highlight()
+
+        self.show_orders()
 
         self.show_hud()
     
