@@ -38,7 +38,9 @@ class Agent(object):
                 self.location = message['payload']
             if message['command'] == 'kill_me':
                 self.exit()
-
+            if message['command'] == 'get_order':
+                self.parent_end.send({'command': 'new_order',
+                                      'payload': self.dispatch.first_order()})
 
     def exit(self):
         self.parent_end.send({'command': 'die'})
@@ -87,8 +89,6 @@ class Agent(object):
             return 'satiate'
         if self.thirst_percent > 75:
             return 'intoxicate'
-        # return 'work'
-	return None
 
         
     def act(self):
@@ -96,9 +96,18 @@ class Agent(object):
             self.hunger_percent = 0
         if self.thirst_percent > 75 and self.capability_at_location('intoxicate'): 
             self.thirst_percent = 0
+
         if not self.route:
             goal = self.greatest_desire()
-            target_location = self.location_of_capability(goal)
+
+            if goal: 
+                target_location = self.location_of_capability(goal)
+            else:
+                target_location = self.get_order()
+
+            print target_location
+            print self.location
+
             if target_location != self.location:
                 self.route = self.pathfind_to(target_location)
 
@@ -124,6 +133,20 @@ class Agent(object):
             if capability in item[0].capabilities:
                 return item[1]
 
+    
+    def get_order(self):
+        self.parent.send({'command': 'get_order'})
+
+        while True:
+            print 'waiting on order'
+            self.parent_end.poll(5)
+
+            message = self.parent.recv()
+            print message
+            if message['command'] == 'new_order':
+                # Just ignore ticks while waiting for order
+                return message['payload']
+
 
     def still_alive(self):
         if self.hunger_percent > 105: 
@@ -135,6 +158,8 @@ class Agent(object):
 
 
     def pathfind_to(self, target_location):
+        print nx.astar_path(self.map, self.location, target_location)[1:]
+
         try:
             return nx.astar_path(self.map, self.location, target_location)[1:]
         except nx.exception.NetworkXNoPath:
