@@ -33,25 +33,46 @@ class Display(object):
     
         dimension = self.scale * self.map.layer_max + 2
         self.DISPLAYSURF = pygame.display.set_mode((dimension, dimension), pygame.SRCALPHA, 32)
-        self.surface_texture = pygame.image.load('graphics/surface_tiles.png')
+        self.aboveground_texture = pygame.image.load('graphics/surface_tiles.png')
         self.underground_texture = pygame.image.load('graphics/underground_tiles.png')
         self.textures = {}
-        self.textures['full_full'] = pygame.Rect(32,64,32,32)
-        self.textures['full_left'] = pygame.Rect(0,64,32,32)
-        self.textures['full_right'] = pygame.Rect(64,64,32,32)
-        self.textures['bottom_full'] = pygame.Rect(32,96,32,32)
-        self.textures['top_full'] = pygame.Rect(32,32,32,32)
-        self.textures['bottom_right'] = pygame.Rect(64,96,32,32)
-        self.textures['bottom_left'] = pygame.Rect(0,96,32,32)
-        self.textures['top_right'] = pygame.Rect(64,32,32,32)
-        self.textures['top_left'] = pygame.Rect(0,32,32,32)
-        self.textures['topbottom'] = pygame.Rect(64,128,32,32)
-        self.textures['rightleft'] = pygame.Rect(0,128,32,32)
-        self.textures['topbottom_left'] = pygame.Rect(0,160,32,32)
-        self.textures['topbottom_right'] = pygame.Rect(64,160,32,32)
-        self.textures['top_rightleft'] = pygame.Rect(32,128,32,32)
-        self.textures['bottom_rightleft'] = pygame.Rect(32,192,32,32)
-        self.textures['no_path'] = pygame.Rect(32,160,32,32)
+        self.textures['underground'] = {}
+        self.textures['aboveground'] = {}
+        self.textures['underground']['full_full'] = pygame.Rect(32,64,32,32)
+        self.textures['underground']['full_left'] = pygame.Rect(0,64,32,32)
+        self.textures['underground']['full_right'] = pygame.Rect(64,64,32,32)
+        self.textures['underground']['bottom_full'] = pygame.Rect(32,96,32,32)
+        self.textures['underground']['top_full'] = pygame.Rect(32,32,32,32)
+        self.textures['underground']['bottom_right'] = pygame.Rect(64,96,32,32)
+        self.textures['underground']['bottom_left'] = pygame.Rect(0,96,32,32)
+        self.textures['underground']['top_right'] = pygame.Rect(64,32,32,32)
+        self.textures['underground']['top_left'] = pygame.Rect(0,32,32,32)
+        self.textures['underground']['topbottom'] = pygame.Rect(64,128,32,32)
+        self.textures['underground']['rightleft'] = pygame.Rect(0,128,32,32)
+        self.textures['underground']['topbottom_left'] = pygame.Rect(0,160,32,32)
+        self.textures['underground']['topbottom_right'] = pygame.Rect(64,160,32,32)
+        self.textures['underground']['top_rightleft'] = pygame.Rect(32,128,32,32)
+        self.textures['underground']['bottom_rightleft'] = pygame.Rect(32,192,32,32)
+        self.textures['underground']['no_path'] = pygame.Rect(32,160,32,32)
+
+
+        self.textures['aboveground']['full_full'] = pygame.Rect(160,160,32,32)
+        self.textures['aboveground']['full_left'] = pygame.Rect(128,32,32,32)
+        self.textures['aboveground']['full_right'] = pygame.Rect(192,32,32,32)
+        self.textures['aboveground']['bottom_full'] = pygame.Rect(160,96,32,32)
+        self.textures['aboveground']['top_full'] = pygame.Rect(160,0,32,32)
+        self.textures['aboveground']['bottom_right'] = pygame.Rect(96,96,32,32)
+        self.textures['aboveground']['bottom_left'] = pygame.Rect(0,96,32,32)
+        self.textures['aboveground']['top_right'] = pygame.Rect(64,96,32,32)
+        self.textures['aboveground']['top_left'] = pygame.Rect(64,64,32,32)
+        self.textures['aboveground']['topbottom'] = pygame.Rect(160,112,32,32)
+        self.textures['aboveground']['rightleft'] = pygame.Rect(0,128,32,32)
+        self.textures['aboveground']['topbottom_left'] = pygame.Rect(27,64,32,32)
+        self.textures['aboveground']['topbottom_right'] = pygame.Rect(40,64,32,32)
+        self.textures['aboveground']['top_rightleft'] = pygame.Rect(32,60,32,32)
+        self.textures['aboveground']['bottom_rightleft'] = pygame.Rect(32,73,32,32)
+        self.textures['aboveground']['no_path'] = pygame.Rect(74,80,32,32)
+
         self.dwarves = pygame.image.load('graphics/dwarves.png')
         self.item_sprites = pygame.image.load('graphics/items.png')
 
@@ -156,6 +177,7 @@ class Display(object):
 
 
     def update(self, agents, items):
+        underground = False
         # draw on the surface object
         self.DISPLAYSURF.fill(self.WHITE)
 
@@ -169,38 +191,74 @@ class Display(object):
             top = node.top_neighbor() in incomming_links
             bottom = node.bottom_neighbor() in incomming_links
             draw_loc = node.xy_display_offset(self.scale)
-            if top and bottom and left and right:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['full_full'])
-            elif top and bottom and left:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['full_right'])
-            elif top and bottom and right:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['full_left'])
-            elif top and left and right:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['bottom_full'])
-            elif bottom and left and right:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['top_full'])
-            elif top and left:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['bottom_right'])
-            elif top and right:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['bottom_left'])
-            elif bottom and left:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['top_right'])
-            elif bottom and right:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['top_left'])
-            elif bottom and top:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['rightleft'])
-            elif right and left:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['topbottom'])
-            elif right:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['topbottom_left'])
-            elif left:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['topbottom_right'])
-            elif top:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['bottom_rightleft'])
-            elif bottom:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['top_rightleft'])
+            if underground:
+                tex = self.underground_texture
+                if top and bottom and left and right:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['full_full'])
+                elif top and bottom and left:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['full_right'])
+                elif top and bottom and right:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['full_left'])
+                elif top and left and right:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['bottom_full'])
+                elif bottom and left and right:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['top_full'])
+                elif top and left:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['bottom_right'])
+                elif top and right:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['bottom_left'])
+                elif bottom and left:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['top_right'])
+                elif bottom and right:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['top_left'])
+                elif bottom and top:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['rightleft'])
+                elif right and left:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['topbottom'])
+                elif right:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['topbottom_left'])
+                elif left:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['topbottom_right'])
+                elif top:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['bottom_rightleft'])
+                elif bottom:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['top_rightleft'])
+                else:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['underground']['no_path'])
             else:
-                self.DISPLAYSURF.blit(self.underground_texture, draw_loc, area=self.textures['no_path'])
+                tex = self.aboveground_texture
+                if top and bottom and left and right:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['full_full'])
+                elif top and bottom and left:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['full_right'])
+                elif top and bottom and right:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['full_left'])
+                elif top and left and right:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['bottom_full'])
+                elif bottom and left and right:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['top_full'])
+                elif top and left:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['bottom_right'])
+                elif top and right:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['bottom_left'])
+                elif bottom and left:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['top_right'])
+                elif bottom and right:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['top_left'])
+                elif bottom and top:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['rightleft'])
+                elif right and left:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['topbottom'])
+                elif right:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['topbottom_left'])
+                elif left:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['topbottom_right'])
+                elif top:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['bottom_rightleft'])
+                elif bottom:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['top_rightleft'])
+                else:
+                    self.DISPLAYSURF.blit(tex, draw_loc, area=self.textures['aboveground']['no_path'])
 
         # for edge in nx.edges(self.map.graph):
         #     if edge[0].z != self.layer or edge[1].z != self.layer:
